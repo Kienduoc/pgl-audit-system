@@ -1,0 +1,7 @@
+email,full_name,role,company_name,phone
+nguyenkien.pharmahd@gmail.com,Nguyen Kien,lead_auditor,Antigravity Cert,0901234567
+auditor1@example.com,Tran Van A,auditor,Antigravity Cert,0901112222
+auditor2@example.com,Le Thi B,auditor,Antigravity Cert,0903334444
+client1@factory.com,Pham Van C,client,Factory ABC,0905556666
+client2@warehouse.com,Hoang Thi D,client,Warehouse XYZ,0907778888
+admin@system.com,System Admin,admin,Antigravity HQ,0909990000
