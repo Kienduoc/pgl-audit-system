@@ -8,6 +8,7 @@ import {
     LogOut,
     Menu
 } from 'lucide-react'
+import { getUserRoles } from '@/lib/auth'
 import { Button } from '@/components/ui/button'
 import {
     DropdownMenu,
@@ -20,6 +21,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NotificationBell } from "@/components/layout/notification-bell"
+import { RoleSwitcher } from "@/components/role-switcher"
 
 export default async function DashboardLayout({
     children,
@@ -36,12 +38,16 @@ export default async function DashboardLayout({
         redirect('/login')
     }
 
-    // Fetch profile
+    // Fetch profile with roles
     const { data: profile } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', user.id)
         .single()
+
+    // Get user's available roles
+    const availableRoles = await getUserRoles(user.id)
+    const activeRole = profile?.active_role || 'client'
 
     const handleSignOut = async () => {
         'use server'
@@ -67,7 +73,7 @@ export default async function DashboardLayout({
                         <LayoutDashboard className="h-4 w-4" />
                         Dashboard
                     </Link>
-                    {profile?.role !== 'client' && (
+                    {activeRole !== 'client' && (
                         <Link
                             href="/audits"
                             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
@@ -76,9 +82,16 @@ export default async function DashboardLayout({
                             Audits
                         </Link>
                     )}
+                    <Link
+                        href="/audit-programs"
+                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                    >
+                        <FileCheck className="h-4 w-4" />
+                        Audit Programs
+                    </Link>
                 </nav>
             </div>
-        </div>
+        </div >
     )
 
     return (
@@ -125,6 +138,7 @@ export default async function DashboardLayout({
                                 <Link href="/profile/settings">Organization Settings</Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>Support</DropdownMenuItem>
+                            <RoleSwitcher currentRole={activeRole} availableRoles={availableRoles} />
                             <DropdownMenuSeparator />
                             <form action={handleSignOut}>
                                 <button type="submit" className="w-full text-left">
