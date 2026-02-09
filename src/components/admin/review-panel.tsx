@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { CheckCircle, XCircle, AlertCircle, Loader2 } from "lucide-react"
 import { adminReviewApplication } from "@/lib/actions/admin-review"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 
 interface ReviewPanelProps {
@@ -17,28 +17,22 @@ interface ReviewPanelProps {
 export function ReviewPanel({ application }: ReviewPanelProps) {
     const [notes, setNotes] = useState("")
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const { toast } = useToast()
 
     const handleDecision = async (decision: 'approved' | 'rejected' | 'info_needed') => {
         setIsSubmitting(true)
         try {
             const result = await adminReviewApplication(application.id, decision, notes)
             if (result.success) {
-                toast({
-                    title: "Success",
+                toast.success("Success", {
                     description: `Application marked as ${decision}`,
                 })
             } else {
-                toast({
-                    variant: "destructive",
-                    title: "Error",
+                toast.error("Error", {
                     description: result.error,
                 })
             }
         } catch (error) {
-            toast({
-                variant: "destructive",
-                title: "Error",
+            toast.error("Error", {
                 description: "Something went wrong",
             })
         } finally {

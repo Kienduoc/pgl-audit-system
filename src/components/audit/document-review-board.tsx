@@ -56,6 +56,28 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
         }
     }
 
+
+    const handleComplete = async () => {
+        // Confirm before completing
+        if (!confirm('Are you sure you want to complete the document review? This will notify the client.')) return
+
+        setSaving('complete')
+        try {
+            const result = await completeDocumentReview(auditId)
+            if (result.success) {
+                toast.success('Document Review Completed')
+                router.refresh()
+                router.push(`/audits/${auditId}`)
+            } else {
+                toast.error('Error completing review', { description: result.error })
+            }
+        } catch (err: any) {
+            toast.error('Error', { description: err.message })
+        } finally {
+            setSaving(null)
+        }
+    }
+
     return (
         <div className="space-y-8">
             {/* Header Actions */}
@@ -139,7 +161,7 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 <Select
                                                     defaultValue={currentStatus}
-                                                    onValueChange={(val) => handleSave(item.id, category.id || 'general', val, currentNotes)}
+                                                    onValueChange={(val) => handleSave(item.id, category.category, val, currentNotes)}
                                                 >
                                                     <SelectTrigger className="bg-white">
                                                         <SelectValue placeholder="Select Status" />
@@ -160,7 +182,7 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
                                                         defaultValue={currentNotes}
                                                         onBlur={(e) => {
                                                             if (e.target.value !== currentNotes) {
-                                                                handleSave(item.id, category.id || 'general', currentStatus, e.target.value)
+                                                                handleSave(item.id, category.category, currentStatus, e.target.value)
                                                             }
                                                         }}
                                                     />

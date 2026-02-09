@@ -35,5 +35,5 @@ export async function getClientCertificates() {
         .eq('status', 'certified')
         .order('issue_date', { ascending: false })
 
-    return certificates || []
+    return (certificates as any) || []
 }

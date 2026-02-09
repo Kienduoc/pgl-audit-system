@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { FileText, CheckCircle, XCircle, AlertCircle, Edit } from 'lucide-react'
 import { useState } from 'react'
-import { submitDocumentReview } from '@/lib/actions/review'
+import { saveDocumentReview } from '@/lib/actions/review'
 import { toast } from 'sonner'
 import {
     Dialog,
@@ -34,7 +34,7 @@ interface ReviewListProps {
 
 export default function ReviewList({ auditId, dossier, reviews }: ReviewListProps) {
     const [selectedItem, setSelectedItem] = useState<any>(null)
-    const [evalStatus, setEvalStatus] = useState<string>('pass')
+    const [evalStatus, setEvalStatus] = useState<string>('ok')
     const [comment, setComment] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [localReviews, setLocalReviews] = useState(reviews)
@@ -57,8 +57,8 @@ export default function ReviewList({ auditId, dossier, reviews }: ReviewListProp
         }
 
         setSelectedItem({ typeId, fileId: file.id, label: DOSSIER_CHECKLIST.find(c => c.items.find(i => i.id === typeId))?.items.find(i => i.id === typeId)?.label })
-        setEvalStatus(currentReview?.evaluation_result || 'pass')
-        setComment(currentReview?.comments || '')
+        setEvalStatus(currentReview?.status || 'ok')
+        setComment(currentReview?.auditor_notes || '')
         setIsDialogOpen(true)
     }
 
@@ -67,27 +67,36 @@ export default function ReviewList({ auditId, dossier, reviews }: ReviewListProp
         setIsSubmitting(true)
 
         try {
-            const result = await submitDocumentReview({
+            const result = await saveDocumentReview({
                 audit_id: auditId,
-                dossier_item_id: selectedItem.fileId,
-                evaluation_result: evalStatus as any,
-                comments: comment
+                item_id: selectedItem.fileId,
+                section_id: selectedItem.typeId,
+                status: evalStatus as 'ok' | 'minor' | 'major' | 'critical' | 'pending',
+                auditor_notes: comment
             })
 
             if (result.success) {
                 toast.success('Đã lưu đánh giá')
                 setLocalReviews(prev => {
-                    const existingIdx = prev.findIndex(r => r.dossier_item_id === selectedItem.fileId)
+                    // Update local state to reflect changes immediately
+                    // Note: Ideally we should strictly use what's returned or revalidate, but for optimistic UI:
+                    // We need to match the structure of 'reviews' passed in props or fetched.
+                    const existingIdx = prev.findIndex(r => r.item_id === selectedItem.fileId || r.dossier_item_id === selectedItem.fileId)
+
                     const newReview = {
                         audit_id: auditId,
-                        dossier_item_id: selectedItem.fileId,
-                        evaluation_result: evalStatus,
-                        comments: comment,
+                        dossier_item_id: selectedItem.fileId, // maintaining compatibility with existing prop structure if needed
+                        item_id: selectedItem.fileId,
+                        status: evalStatus,
+                        evaluation_result: evalStatus, // for compatibility
+                        auditor_notes: comment,
+                        comments: comment, // for compatibility
                         id: existingIdx >= 0 ? prev[existingIdx].id : 'temp-' + Date.now()
                     }
+
                     if (existingIdx >= 0) {
                         const newArr = [...prev]
-                        newArr[existingIdx] = newReview
+                        newArr[existingIdx] = { ...prev[existingIdx], ...newReview }
                         return newArr
                     }
                     return [...prev, newReview]
@@ -105,9 +114,18 @@ export default function ReviewList({ auditId, dossier, reviews }: ReviewListProp
 
     const getStatusBadge = (status: string) => {
         switch (status) {
-            case 'pass': return <Badge className="bg-green-500">Đạt yêu cầu</Badge>
-            case 'fail': return <Badge variant="destructive">Không đạt</Badge>
-            case 'info_needed': return <Badge variant="secondary">Cần bổ sung</Badge>
+            case 'ok':
+            case 'pass':
+                return <Badge className="bg-green-500">Đạt yêu cầu</Badge>
+            case 'major':
+            case 'fail':
+                return <Badge variant="destructive">Không đạt (Major)</Badge>
+            case 'minor':
+                return <Badge className="bg-orange-500">Không đạt (Minor)</Badge>
+            case 'critical':
+                return <Badge variant="destructive" className="animate-pulse">Nghiêm trọng</Badge>
+            case 'info_needed':
+                return <Badge variant="secondary">Cần bổ sung</Badge>
             default: return null
         }
     }
@@ -132,7 +150,8 @@ export default function ReviewList({ auditId, dossier, reviews }: ReviewListProp
                             <tbody>
                                 {category.items.map((item) => {
                                     const file = getFile(item.id)
-                                    const review = file ? getReview(file.id) : null
+                                    // Check both likely field names for ID match due to potential schema mismatch/migration
+                                    const review = file ? localReviews.find((r: any) => r.dossier_item_id === file.id || r.item_id === file.id) : null
 
                                     return (
                                         <tr key={item.id} className="border-b last:border-0 hover:bg-gray-50/50">
@@ -157,9 +176,9 @@ export default function ReviewList({ auditId, dossier, reviews }: ReviewListProp
                                             <td className="p-3 align-top">
                                                 {review ? (
                                                     <div className="space-y-1">
-                                                        {getStatusBadge(review.evaluation_result)}
-                                                        {review.comments && (
-                                                            <p className="text-xs text-gray-600 italic mt-1">"{review.comments}"</p>
+                                                        {getStatusBadge(review.status || review.evaluation_result)}
+                                                        {(review.auditor_notes || review.comments) && (
+                                                            <p className="text-xs text-gray-600 italic mt-1">"{review.auditor_notes || review.comments}"</p>
                                                         )}
                                                     </div>
                                                 ) : (
@@ -201,9 +220,10 @@ export default function ReviewList({ auditId, dossier, reviews }: ReviewListProp
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="pass">Đạt yêu cầu (Pass)</SelectItem>
-                                    <SelectItem value="fail">Không đạt (Major/Minor)</SelectItem>
-                                    <SelectItem value="info_needed">Cần bổ sung (Request Info)</SelectItem>
+                                    <SelectItem value="ok">Đạt yêu cầu (OK)</SelectItem>
+                                    <SelectItem value="minor">Không đạt (Minor)</SelectItem>
+                                    <SelectItem value="major">Không đạt (Major)</SelectItem>
+                                    <SelectItem value="critical">Nghiêm trọng (Critical)</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
