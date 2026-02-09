@@ -14,11 +14,51 @@ export async function getUserRole(userId: string): Promise<UserRole | null> {
     const supabase = await createClient()
     const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('active_role')
         .eq('id', userId)
         .single()
 
-    return profile?.role as UserRole || null
+    return profile?.active_role as UserRole || null
+}
+
+export async function getUserRoles(userId: string): Promise<UserRole[]> {
+    const supabase = await createClient()
+    const { data: profile } = await supabase
+        .from('profiles')
+        .select('roles')
+        .eq('id', userId)
+        .single()
+
+    return profile?.roles || []
+}
+
+export async function switchRole(userId: string, newRole: UserRole): Promise<{ success: boolean; error?: string }> {
+    const supabase = await createClient()
+
+    // Verify user has this role
+    const roles = await getUserRoles(userId)
+    if (!roles.includes(newRole)) {
+        return { success: false, error: 'User does not have this role' }
+    }
+
+    const { error } = await supabase
+        .from('profiles')
+        .update({ active_role: newRole })
+        .eq('id', userId)
+
+    if (error) {
+        return { success: false, error: error.message }
+    }
+
+    return { success: true }
+}
+
+export function getDefaultRole(roles: UserRole[]): UserRole {
+    const priority: UserRole[] = ['admin', 'lead_auditor', 'auditor', 'client']
+    for (const role of priority) {
+        if (roles.includes(role)) return role
+    }
+    return 'client'
 }
 
 export async function authorize(allowedRoles: UserRole[]) {
