@@ -40,16 +40,16 @@ export function AuditTabs({ auditId, role }: { auditId: string, role?: string })
                     /* Auditor/Admin Tabs */
                     <>
                         <Link href={`/audits/${auditId}/dossier`}>
-                            <TabsTrigger value="dossier">Review Dossier</TabsTrigger>
+                            <TabsTrigger value="dossier">Xem Xét Hồ Sơ</TabsTrigger>
                         </Link>
                         <Link href={`/audits/${auditId}/checklist`}>
-                            <TabsTrigger value="checklist">Checklist (Input)</TabsTrigger>
+                            <TabsTrigger value="checklist">Danh Mục Kiểm Tra</TabsTrigger>
                         </Link>
                         <Link href={`/audits/${auditId}/findings`}>
-                            <TabsTrigger value="findings">Findings (Summary)</TabsTrigger>
+                            <TabsTrigger value="findings">Phát Hiện Đánh Giá</TabsTrigger>
                         </Link>
                         <Link href={`/audits/${auditId}/report`}>
-                            <TabsTrigger value="report">Report</TabsTrigger>
+                            <TabsTrigger value="report">Báo Cáo</TabsTrigger>
                         </Link>
                     </>
                 )}

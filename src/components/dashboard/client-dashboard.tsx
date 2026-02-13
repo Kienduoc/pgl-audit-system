@@ -34,9 +34,9 @@ export function ClientDashboard({ stats, lists, profile, org }: ClientDashboardP
         <div className="flex flex-col space-y-6 p-8 pt-6">
             <div className="flex items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-primary">Enterprise Dashboard</h2>
+                    <h2 className="text-3xl font-bold tracking-tight text-primary">Tổng Quan Doanh Nghiệp</h2>
                     <p className="text-lg text-muted-foreground mt-2">
-                        Welcome back, <span className="font-semibold text-foreground">{org?.vietnamese_name || org?.english_name || profile?.company_name || "Organization"}</span>
+                        Chào mừng trở lại, <span className="font-semibold text-foreground">{org?.vietnamese_name || org?.english_name || profile?.company_name || "Doanh Nghiệp"}</span>
                     </p>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -54,17 +54,17 @@ export function ClientDashboard({ stats, lists, profile, org }: ClientDashboardP
                     <Card className="border-t-4 border-t-blue-500 shadow-sm shrink-0">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between space-y-0 pb-2">
-                                <div className="text-sm font-medium text-muted-foreground">Total Applications</div>
+                                <div className="text-sm font-medium text-muted-foreground">Tổng Số Đơn</div>
                                 <FileText className="h-4 w-4 text-blue-500" />
                             </div>
                             <div className="text-2xl font-bold">{stats.totalApplications}</div>
                             <p className="text-xs text-muted-foreground">
-                                {stats.totalApplications > 0 ? "+1 from last month" : "No applications yet"}
+                                {stats.totalApplications > 0 ? "Đơn đã nộp" : "Chưa có đơn nào"}
                             </p>
                         </CardContent>
                     </Card>
                     <div className="flex-1 min-h-0 bg-muted/10 rounded-lg border p-4">
-                        <RecentApplications applications={lists.applications} title="Recent Applications" />
+                        <RecentApplications applications={lists.applications} title="Đơn Gần Đây" />
                     </div>
                 </div>
 
@@ -73,12 +73,12 @@ export function ClientDashboard({ stats, lists, profile, org }: ClientDashboardP
                     <Card className="border-t-4 border-t-amber-500 shadow-sm shrink-0">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between space-y-0 pb-2">
-                                <div className="text-sm font-medium text-muted-foreground">Active Audits</div>
+                                <div className="text-sm font-medium text-muted-foreground">Đánh Giá Đang Tiến Hành</div>
                                 <Activity className="h-4 w-4 text-amber-500" />
                             </div>
                             <div className="text-2xl font-bold">{stats.activeAudits}</div>
                             <p className="text-xs text-muted-foreground">
-                                {stats.activeAudits > 0 ? "Currently in progress" : "No active audits"}
+                                {stats.activeAudits > 0 ? "Đang thực hiện" : "Không có đánh giá nào"}
                             </p>
                         </CardContent>
                     </Card>
@@ -92,12 +92,12 @@ export function ClientDashboard({ stats, lists, profile, org }: ClientDashboardP
                     <Card className="border-t-4 border-t-green-500 shadow-sm shrink-0">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between space-y-0 pb-2">
-                                <div className="text-sm font-medium text-muted-foreground">Certified Products</div>
+                                <div className="text-sm font-medium text-muted-foreground">Sản Phẩm Đã Chứng Nhận</div>
                                 <Award className="h-4 w-4 text-green-500" />
                             </div>
                             <div className="text-2xl font-bold">{stats.certifiedProducts}</div>
                             <p className="text-xs text-muted-foreground">
-                                {stats.certifiedProducts > 0 ? "Valid certificates" : "No certificates yet"}
+                                {stats.certifiedProducts > 0 ? "Chứng chỉ có hiệu lực" : "Chưa có chứng chỉ nào"}
                             </p>
                         </CardContent>
                     </Card>
@@ -111,12 +111,12 @@ export function ClientDashboard({ stats, lists, profile, org }: ClientDashboardP
                     <Card className="border-t-4 border-t-orange-500 shadow-sm shrink-0">
                         <CardContent className="p-6">
                             <div className="flex items-center justify-between space-y-0 pb-2">
-                                <div className="text-sm font-medium text-muted-foreground">Pending Actions</div>
+                                <div className="text-sm font-medium text-muted-foreground">Cần Xử Lý</div>
                                 <AlertCircle className="h-4 w-4 text-orange-500" />
                             </div>
                             <div className="text-2xl font-bold">{stats.pendingActions}</div>
                             <p className="text-xs text-muted-foreground">
-                                {stats.pendingActions > 0 ? "Requires attention" : "All caught up"}
+                                {stats.pendingActions > 0 ? "Cần chú ý" : "Đã hoàn thành hết"}
                             </p>
                         </CardContent>
                     </Card>

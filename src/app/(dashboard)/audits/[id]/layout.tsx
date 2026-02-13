@@ -67,7 +67,7 @@ export default async function AuditLayout({
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold tracking-tight">Audit: {audit.project_code}</h1>
-          <div className="text-sm text-muted-foreground capitalize">Status: {audit.status}</div>
+          <div className="text-sm text-muted-foreground capitalize">Trạng Thái: {audit.status}</div>
         </div>
 
         {/* Workflow Stepper */}

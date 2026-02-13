@@ -16,12 +16,12 @@ export function AuditTracking({ audits }: { audits: Audit[] }) {
         return (
             <Card className="h-full">
                 <CardHeader>
-                    <CardTitle className="text-lg">Ongoing Audits</CardTitle>
+                    <CardTitle className="text-lg">Đánh Giá Đang Thực Hiện</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col items-center justify-center h-40 text-muted-foreground text-sm">
                         <CheckCircle className="h-8 w-8 mb-2 opacity-20" />
-                        <p>No audits in progress.</p>
+                        <p>Không có đánh giá nào đang thực hiện.</p>
                     </div>
                 </CardContent>
             </Card>
@@ -43,7 +43,7 @@ export function AuditTracking({ audits }: { audits: Audit[] }) {
     return (
         <div className="h-full flex flex-col">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-base text-muted-foreground uppercase tracking-wider">Ongoing Audits</h3>
+                <h3 className="font-semibold text-base text-muted-foreground uppercase tracking-wider">Đánh Giá Đang Thực Hiện</h3>
             </div>
             <div className="space-y-3 flex-1 overflow-auto">
                 {audits.map((audit) => (
@@ -67,10 +67,10 @@ export function AuditTracking({ audits }: { audits: Audit[] }) {
                                 />
                             </div>
                             <div className="flex justify-between text-[10px] text-muted-foreground px-1">
-                                <span>Plan</span>
-                                <span>Doc</span>
-                                <span>Site</span>
-                                <span>Report</span>
+                                <span>Kế Hoạch</span>
+                                <span>Hồ Sơ</span>
+                                <span>Hiện Trường</span>
+                                <span>Báo Cáo</span>
                             </div>
                         </div>
                     </div>

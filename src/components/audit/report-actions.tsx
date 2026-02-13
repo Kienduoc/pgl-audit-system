@@ -11,7 +11,7 @@ export function ReportActions({ auditId }: { auditId: string }) {
     return (
         <div className="flex gap-2">
             <Button onClick={handlePrint}>
-                <Printer className="mr-2 h-4 w-4" /> Print / Save as PDF
+                <Printer className="mr-2 h-4 w-4" /> In / Lưu dưới dạng PDF
             </Button>
         </div>
     )

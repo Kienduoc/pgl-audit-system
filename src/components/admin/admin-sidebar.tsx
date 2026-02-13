@@ -28,27 +28,27 @@ import {
 // Admin navigation items
 const adminNavItems = [
     {
-        title: "Dashboard",
+        title: "Tổng Quan",
         href: "/admin",
         icon: LayoutDashboard,
     },
     {
-        title: "Applications",
+        title: "Đơn Đăng Ký",
         href: "/admin/applications",
         icon: FileText,
     },
     {
-        title: "Projects",
+        title: "Dự Án",
         href: "/admin/projects",
         icon: ShieldCheck,
     },
     {
-        title: "Users",
+        title: "Người Dùng",
         href: "/admin/users",
         icon: Users,
     },
     {
-        title: "Settings",
+        title: "Cài Đặt",
         href: "/admin/settings",
         icon: Settings,
     },

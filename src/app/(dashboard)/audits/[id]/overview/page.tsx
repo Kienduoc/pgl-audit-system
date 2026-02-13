@@ -19,7 +19,7 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
         .from('audits')
         .select(`
         *,
-        client:profiles!client_id(full_name, email),
+        client:profiles!client_id(full_name, email, company_name),
         team:audit_members(
             user_id,
             role,
@@ -30,7 +30,8 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
         .single()
 
     if (error || !audit) {
-        return <div>Audit not found</div>
+        console.error("Audit fetch error:", error)
+        return <div>Không tìm thấy đánh giá hoặc không có quyền truy cập.</div>
     }
 
     // Fetch Documents
@@ -41,42 +42,37 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
         .order('created_at', { ascending: false })
 
     // Determine Current User Role Context
+    // Determine Current User Role Context
     let userRole = 'viewer'
     if (user) {
-        // Check Admin/Lead role from Profile or Audit field?
-        // Simple check based on audit relation
-        if (audit.lead_auditor_id === user.id) {
-            userRole = 'lead_auditor'
-        } else if (audit.client_id === user.id) {
+        // Fetch User Profile Active Role
+        const { data: profile } = await supabase.from('profiles').select('active_role, role').eq('id', user.id).single()
+        const activeRole = profile?.active_role || profile?.role || 'client'
+
+        if (activeRole === 'admin') {
+            userRole = 'admin'
+        } else if (activeRole === 'lead_auditor' || audit.lead_auditor_id === user.id) {
+            userRole = 'lead_auditor' // Admins also act as leads if needed, but explicit role is better
+        } else if (activeRole === 'client' || audit.client_id === user.id) {
             userRole = 'client'
-        } else if (audit.team?.some((m: any) => m.user_id === user.id)) {
+        } else if (activeRole === 'auditor' || audit.team?.some((m: any) => m.user_id === user.id)) {
             userRole = 'auditor'
-        } else {
-            // Fallback: check profile role for Admin override
-            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-            if (profile?.role === 'admin' || profile?.role === 'lead_auditor') userRole = 'lead_auditor'
         }
     }
 
     // Lifecycle Logic
     const phases = [
-        { id: 'planned', label: 'Plan', next: 'ongoing', actionLabel: 'Start Evaluation', icon: Calendar },
-        { id: 'ongoing', label: 'Evaluation', next: 'reviewing', actionLabel: 'Finish Evaluation', icon: ClipboardCheck },
-        { id: 'reviewing', label: 'Reporting', next: 'certified', actionLabel: 'Finalize & Certify', icon: FileCheck },
-        { id: 'certified', label: 'Certified', next: null, actionLabel: 'Audit Completed', icon: CheckCircle2 },
-        { id: 'completed', label: 'Completed', next: null, actionLabel: 'Archived', icon: CheckCircle2 },
+        { id: 'planned', label: 'Lập Kế Hoạch', next: 'ongoing', actionLabel: 'Bắt Đầu Đánh Giá', icon: Calendar },
+        { id: 'ongoing', label: 'Đánh Giá', next: 'reviewing', actionLabel: 'Hoàn Thành Đánh Giá', icon: ClipboardCheck },
+        { id: 'reviewing', label: 'Báo Cáo', next: 'certified', actionLabel: 'Hoàn Tất & Chứng Nhận', icon: FileCheck },
+        { id: 'certified', label: 'Chứng Nhận', next: null, actionLabel: 'Đánh Giá Hoàn Tất', icon: CheckCircle2 },
+        { id: 'completed', label: 'Hoàn Thành', next: null, actionLabel: 'Đã Lưu Trữ', icon: CheckCircle2 },
     ]
 
     const currentPhaseIdx = phases.findIndex(p => p.id === audit.status)
     const currentPhase = phases[currentPhaseIdx] || phases[0]
     const nextPhase = phases[currentPhaseIdx + 1]
 
-    async function advancePhase() {
-        'use server'
-        if (nextPhase) {
-            await updateAuditStatus(id, nextPhase.id)
-        }
-    }
 
     return (
         <div className="space-y-6">
@@ -84,27 +80,27 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
                 {/* Audit Details Card */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Audit Details</CardTitle>
-                        <CardDescription>General information and scope</CardDescription>
+                        <CardTitle>Chi Tiết Đánh Giá</CardTitle>
+                        <CardDescription>Thông tin chung và phạm vi</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid grid-cols-2 gap-2 text-sm">
-                            <span className="text-muted-foreground">Project Code:</span>
+                            <span className="text-muted-foreground">Mã Dự Án:</span>
                             <span className="font-medium">{audit.project_code}</span>
 
-                            <span className="text-muted-foreground">Standard:</span>
+                            <span className="text-muted-foreground">Tiêu Chuẩn:</span>
                             <span className="font-medium">{audit.standard}</span>
 
-                            <span className="text-muted-foreground">Date:</span>
+                            <span className="text-muted-foreground">Ngày:</span>
                             <span className="font-medium">{audit.audit_date ? format(new Date(audit.audit_date), 'dd/MM/yyyy') : 'N/A'}</span>
 
-                            <span className="text-muted-foreground">Client:</span>
+                            <span className="text-muted-foreground">Khách Hàng:</span>
                             <span className="font-medium">{audit.client?.full_name}</span>
                         </div>
                         <Separator />
                         <div>
-                            <span className="text-sm text-muted-foreground block mb-1">Scope:</span>
-                            <p className="text-sm">{audit.scope || 'No scope defined.'}</p>
+                            <span className="text-sm text-muted-foreground block mb-1">Phạm Vi:</span>
+                            <p className="text-sm">{audit.scope || 'Chưa xác định phạm vi.'}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -112,8 +108,8 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
                 {/* Lifecycle Manager Card */}
                 <Card className="border-primary/20 bg-primary/5">
                     <CardHeader>
-                        <CardTitle>Audit Lifecycle</CardTitle>
-                        <CardDescription>Current Status: <Badge variant="outline" className="capitalize ml-1">{audit.status}</Badge></CardDescription>
+                        <CardTitle>Vòng Đời Đánh Giá</CardTitle>
+                        <CardDescription>Trạng Thái Hiện Tại: <Badge variant="outline" className="capitalize ml-1">{audit.status}</Badge></CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="flex flex-col items-center justify-center py-4 space-y-4">
@@ -124,17 +120,20 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
                                 })()}
                             </div>
                             <div className="text-center">
-                                <h3 className="font-bold text-lg">{currentPhase.label} Phase</h3>
+                                <h3 className="font-bold text-lg">Giai Đoạn {currentPhase.label}</h3>
                                 <p className="text-sm text-muted-foreground">
-                                    {audit.status === 'planned' && "Setup team and schedule. Ready to start?"}
-                                    {audit.status === 'ongoing' && "Auditors are conducting evaluation."}
-                                    {audit.status === 'reviewing' && "Reviewing findings and preparing report."}
-                                    {audit.status === 'certified' && "Audit completed and certified."}
+                                    {audit.status === 'planned' && "Thiết lập đội ngũ và lịch trình. Sẵn sàng bắt đầu?"}
+                                    {audit.status === 'ongoing' && "Chuyên gia đang tiến hành đánh giá."}
+                                    {audit.status === 'reviewing' && "Xem xét các phát hiện và chuẩn bị báo cáo."}
+                                    {audit.status === 'certified' && "Đánh giá đã hoàn tất và được chứng nhận."}
                                 </p>
                             </div>
 
                             {nextPhase && (
-                                <form action={advancePhase} className="w-full">
+                                <form action={async () => {
+                                    'use server'
+                                    await updateAuditStatus(id, nextPhase.id)
+                                }} className="w-full">
                                     <Button className="w-full" size="lg">
                                         {currentPhase.actionLabel} <ArrowRight className="ml-2 h-4 w-4" />
                                     </Button>
@@ -142,7 +141,7 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
                             )}
                             {!nextPhase && (
                                 <Button disabled variant="outline" className="w-full text-green-600 border-green-200 bg-green-50">
-                                    <CheckCircle2 className="mr-2 h-4 w-4" /> Process Completed
+                                    <CheckCircle2 className="mr-2 h-4 w-4" /> Quy Trình Hoàn Tất
                                 </Button>
                             )}
                         </div>
@@ -154,11 +153,11 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Audit Team</CardTitle>
-                        <CardDescription>Assigned auditors for this project</CardDescription>
+                        <CardTitle>Đoàn Đánh Giá</CardTitle>
+                        <CardDescription>Các chuyên gia được phân công cho dự án này</CardDescription>
                     </div>
                     <Button variant="outline" size="sm">
-                        <Users className="mr-2 h-4 w-4" /> Manage Team
+                        <Users className="mr-2 h-4 w-4" /> Quản Lý Đội Ngũ
                     </Button>
                 </CardHeader>
                 <CardContent>
@@ -175,12 +174,17 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
                                             <p className="text-xs text-muted-foreground">{member.user?.email}</p>
                                         </div>
                                     </div>
-                                    <Badge variant="secondary" className="capitalize">{member.role}</Badge>
+
+                                    <Badge variant="secondary" className="capitalize">
+                                        {member.role === 'Lead Auditor' ? 'Trưởng Đoàn' :
+                                            member.role === 'Auditor' ? 'Đánh Giá Viên' :
+                                                member.role === 'Technical Expert' ? 'Chuyên Gia KT' : member.role}
+                                    </Badge>
                                 </div>
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-4 text-muted-foreground">No team members assigned yet.</div>
+                        <div className="text-center py-4 text-muted-foreground">Chưa có thành viên nào được phân công.</div>
                     )}
                 </CardContent>
             </Card>
@@ -194,6 +198,6 @@ export default async function AuditOverviewPage({ params }: { params: Promise<{ 
                     currentUserRole={userRole}
                 />
             </div>
-        </div>
+        </div >
     )
 }

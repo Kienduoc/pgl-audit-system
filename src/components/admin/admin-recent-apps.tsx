@@ -22,7 +22,7 @@ export function AdminRecentApplications({ applications }: AdminRecentAppsProps) 
     if (!applications || applications.length === 0) {
         return (
             <div className="flex h-[300px] flex-col items-center justify-center text-muted-foreground bg-muted/20 rounded-md">
-                <p>No recent applications found.</p>
+                <p>Không có hồ sơ gần đây.</p>
             </div>
         )
     }
@@ -32,11 +32,11 @@ export function AdminRecentApplications({ applications }: AdminRecentAppsProps) 
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Company</TableHead>
-                        <TableHead>Product</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Submitted</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
+                        <TableHead>Công Ty</TableHead>
+                        <TableHead>Sản Phẩm</TableHead>
+                        <TableHead>Trạng Thái</TableHead>
+                        <TableHead>Ngày Nộp</TableHead>
+                        <TableHead className="text-right">Hành Động</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -74,7 +74,7 @@ export function AdminRecentApplications({ applications }: AdminRecentAppsProps) 
             <div className="p-4 mt-auto border-t bg-muted/20">
                 <Link href="/admin/applications" className="w-full">
                     <Button variant="outline" size="sm" className="w-full">
-                        View All Applications <ArrowRight className="ml-2 h-3 w-3" />
+                        Xem Tất Cả Hồ Sơ <ArrowRight className="ml-2 h-3 w-3" />
                     </Button>
                 </Link>
             </div>

@@ -23,17 +23,17 @@ export function ReviewPanel({ application }: ReviewPanelProps) {
         try {
             const result = await adminReviewApplication(application.id, decision, notes)
             if (result.success) {
-                toast.success("Success", {
-                    description: `Application marked as ${decision}`,
+                toast.success("Thành công", {
+                    description: `Đơn đã được đánh dấu là ${decision}`,
                 })
             } else {
-                toast.error("Error", {
+                toast.error("Lỗi", {
                     description: result.error,
                 })
             }
         } catch (error) {
-            toast.error("Error", {
-                description: "Something went wrong",
+            toast.error("Lỗi", {
+                description: "Đã xảy ra lỗi",
             })
         } finally {
             setIsSubmitting(false)
@@ -44,16 +44,16 @@ export function ReviewPanel({ application }: ReviewPanelProps) {
         <Card className="h-full border-l-4 border-l-primary/20">
             <CardHeader>
                 <CardTitle className="flex justify-between items-center">
-                    Review Actions
+                    Hoạt Động Xem Xét
                     <Badge variant={application.status === 'submitted' ? 'default' : 'secondary'}>{application.status}</Badge>
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2">
-                    <Label htmlFor="notes">Review Notes</Label>
+                    <Label htmlFor="notes">Ghi Chú Xem Xét</Label>
                     <Textarea
                         id="notes"
-                        placeholder="Add internal notes or feedback for the client..."
+                        placeholder="Thêm ghi chú nội bộ hoặc phản hồi cho khách hàng..."
                         className="min-h-[150px]"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
@@ -67,7 +67,7 @@ export function ReviewPanel({ application }: ReviewPanelProps) {
                     disabled={isSubmitting}
                 >
                     {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle className="mr-2 h-4 w-4" />}
-                    Approve & Create Project
+                    Phê Duyệt & Tạo Dự Án
                 </Button>
                 <Button
                     variant="secondary"
@@ -76,7 +76,7 @@ export function ReviewPanel({ application }: ReviewPanelProps) {
                     disabled={isSubmitting}
                 >
                     <AlertCircle className="mr-2 h-4 w-4" />
-                    Request More Info
+                    Yêu Cầu Bổ Sung
                 </Button>
                 <Button
                     variant="destructive"
@@ -85,7 +85,7 @@ export function ReviewPanel({ application }: ReviewPanelProps) {
                     disabled={isSubmitting}
                 >
                     <XCircle className="mr-2 h-4 w-4" />
-                    Reject Application
+                    Từ Chối Đơn
                 </Button>
             </CardFooter>
         </Card>

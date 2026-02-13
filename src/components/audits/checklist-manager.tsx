@@ -72,7 +72,7 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
             })
 
             if (result.success) {
-                toast.success('Recorded successfully')
+                toast.success('Ghi nhận thành công')
                 setIsDialogOpen(false)
                 setSelectedTemplate(null)
                 // In a real app we'd append to responses
@@ -81,7 +81,7 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
                 toast.error(result.error)
             }
         } catch (error) {
-            toast.error('Failed to save')
+            toast.error('Lưu thất bại')
         } finally {
             setIsSaving(false)
         }
@@ -94,9 +94,9 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
                     <Search className="h-8 w-8 text-blue-600" />
                 </div>
                 <div>
-                    <h3 className="text-lg font-semibold text-slate-900">Start Assessment</h3>
+                    <h3 className="text-lg font-semibold text-slate-900">Bắt Đầu Đánh Giá</h3>
                     <p className="text-slate-500 max-w-md mx-auto mt-2">
-                        Search for a clause or requirement to evaluate. Observations can be recorded as Pass or Fail.
+                        Tìm kiếm điều khoản hoặc yêu cầu để đánh giá. Ghi nhận là Đạt hoặc Không Đạt.
                     </p>
                 </div>
 
@@ -104,20 +104,20 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
                     <DialogTrigger asChild>
                         <Button size="lg" className="mt-4">
                             <Plus className="mr-2 h-4 w-4" />
-                            Evaluate Requirement (+ Finding)
+                            Đánh Giá Yêu Cầu (+ Phát Hiện)
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
-                            <DialogTitle>Select Requirement to Evaluate</DialogTitle>
+                            <DialogTitle>Chọn Yêu Cầu Đánh Giá</DialogTitle>
                         </DialogHeader>
 
                         {!selectedTemplate ? (
                             <Command className="rounded-lg border shadow-md">
-                                <CommandInput placeholder="Search clause (e.g. 4.1) or keyword..." />
+                                <CommandInput placeholder="Tìm kiếm điều khoản (vd: 4.1) hoặc từ khóa..." />
                                 <CommandList className="max-h-[60vh]">
-                                    <CommandEmpty>No results found.</CommandEmpty>
-                                    <CommandGroup heading="Requirements">
+                                    <CommandEmpty>Không tìm thấy kết quả.</CommandEmpty>
+                                    <CommandGroup heading="Yêu Cầu">
                                         {templates.map((t) => (
                                             <CommandItem
                                                 key={t.id}
@@ -148,30 +148,30 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
 
                                 <div className="space-y-4">
                                     <div>
-                                        <Label>Observation / Evidence</Label>
+                                        <Label>Quan Sát / Bằng Chứng</Label>
                                         <Textarea
                                             name="observation"
                                             required
-                                            placeholder="Describe what you observed..."
+                                            placeholder="Mô tả những gì bạn quan sát được..."
                                             className="mt-1.5 min-h-[100px]"
                                         />
                                     </div>
 
                                     <div>
-                                        <Label className="mb-2 block">Conclusion</Label>
+                                        <Label className="mb-2 block">Kết Luận</Label>
                                         <RadioGroup name="conclusion" defaultValue="pass" className="flex space-x-4">
                                             <div className="flex items-center space-x-2 border p-3 rounded-md w-full cursor-pointer hover:bg-slate-50 has-[:checked]:border-green-500 has-[:checked]:bg-green-50/50">
                                                 <RadioGroupItem value="pass" id="pass" />
                                                 <Label htmlFor="pass" className="cursor-pointer font-medium text-green-700 flex items-center">
                                                     <CheckCircle className="w-4 h-4 mr-2" />
-                                                    Pass (Conformty)
+                                                    Hoàn Toàn Tuân Thủ
                                                 </Label>
                                             </div>
                                             <div className="flex items-center space-x-2 border p-3 rounded-md w-full cursor-pointer hover:bg-slate-50 has-[:checked]:border-red-500 has-[:checked]:bg-red-50/50">
                                                 <RadioGroupItem value="fail" id="fail" />
                                                 <Label htmlFor="fail" className="cursor-pointer font-medium text-red-700 flex items-center">
                                                     <AlertTriangle className="w-4 h-4 mr-2" />
-                                                    Fail (Non-conformity)
+                                                    Không Tuân Thủ
                                                 </Label>
                                             </div>
                                         </RadioGroup>
@@ -181,28 +181,28 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
                                     <div className="hidden has-[:checked]:block animate-in fade-in slide-in-from-top-2 p-4 border border-red-200 bg-red-50/30 rounded-lg space-y-4">
                                         <div className="flex items-center gap-2 text-red-700 font-medium pb-2 border-b border-red-200">
                                             <AlertTriangle className="h-4 w-4" />
-                                            Record Finding Details
+                                            Ghi Nhận Chi Tiết Phát Hiện
                                         </div>
 
                                         <div>
-                                            <Label>Finding Type</Label>
+                                            <Label>Loại Phát Hiện</Label>
                                             <Select name="finding_type" defaultValue="minor">
                                                 <SelectTrigger className="bg-white">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="major">Major Non-conformity (Lỗi nặng)</SelectItem>
-                                                    <SelectItem value="minor">Minor Non-conformity (Lỗi nhẹ)</SelectItem>
-                                                    <SelectItem value="observation">Observation (Lưu ý)</SelectItem>
+                                                    <SelectItem value="major">Lỗi Nặng (Major)</SelectItem>
+                                                    <SelectItem value="minor">Lỗi Nhẹ (Minor)</SelectItem>
+                                                    <SelectItem value="observation">Lưu Ý (Observation)</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
 
                                         <div>
-                                            <Label>Finding Description</Label>
+                                            <Label>Mô Tả Phát Hiện</Label>
                                             <Textarea
                                                 name="finding_description"
-                                                placeholder="Formal statement of the finding..."
+                                                placeholder="Mô tả chính thức về phát hiện..."
                                                 className="mt-1.5 bg-white"
                                             />
                                         </div>
@@ -215,10 +215,10 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
                                         variant="ghost"
                                         onClick={() => setSelectedTemplate(null)}
                                     >
-                                        Cancel
+                                        Hủy
                                     </Button>
                                     <Button type="submit" disabled={isSaving}>
-                                        {isSaving ? 'Saving...' : 'Save Assessment'}
+                                        {isSaving ? 'Đang Lưu...' : 'Lưu Đánh Giá'}
                                     </Button>
                                 </div>
                             </form>
@@ -230,7 +230,7 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
             {/* List of recorded responses? */}
             {responses.length > 0 && (
                 <div className="mt-8">
-                    <h3 className="text-lg font-bold mb-4">Recorded Assessments ({responses.length})</h3>
+                    <h3 className="text-lg font-bold mb-4">Đánh Giá Đã Ghi Nhận ({responses.length})</h3>
                     <div className="grid gap-3">
                         {responses.map((res: any, i: number) => (
                             <Card key={i} className="overflow-hidden">
@@ -251,9 +251,9 @@ export default function AuditChecklistManager({ auditId, templates, initialRespo
                                     </div>
                                     <div className="ml-4">
                                         {res.conclusion === 'pass' ? (
-                                            <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold uppercase">Pass</span>
+                                            <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold uppercase">Đạt</span>
                                         ) : (
-                                            <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold uppercase">Fail</span>
+                                            <span className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold uppercase">Không Đạt</span>
                                         )}
                                     </div>
                                 </div>

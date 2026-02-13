@@ -49,24 +49,24 @@ interface ApplicationFormProps {
 }
 
 const ORG_TYPES = [
-    "State-owned (Quốc doanh)",
-    "Joint Venture (Liên doanh)",
-    "Joint Stock / LTD (Cổ phần / TNHH)",
-    "Foreign Investment (Nước ngoài)",
-    "Partnership (Hợp doanh)",
-    "Other (Khác)"
+    "Doanh nghiệp Nhà nước",
+    "Doanh nghiệp Liên doanh",
+    "Công ty Cổ phần / TNHH",
+    "Doanh nghiệp có vốn đầu tư nước ngoài",
+    "Công ty Hợp danh",
+    "Khác"
 ]
 
 const ATTACHMENT_CHECKLIST = [
-    "Legal documents (Business Registration, Investment Cert...)",
-    "Product description, photos of products and components",
-    "Catalogue / Installation & User Manuals",
-    "Quality Management System certificates (ISO 9001 etc.)",
-    "Production control records (material tracking, design records)",
-    "Production flowcharts / Specific production content",
-    "Type test results (products/components)",
-    "Standard conformity certificates for type samples",
-    "Other technical documents"
+    "Hồ sơ pháp lý (Đăng ký kinh doanh, Chứng nhận đầu tư...)",
+    "Mô tả sản phẩm, hình ảnh sản phẩm và linh kiện",
+    "Catalogue / Hướng dẫn lắp đặt & sử dụng",
+    "Chứng chỉ Hệ thống Quản lý Chất lượng (ISO 9001...)",
+    "Hồ sơ kiểm soát sản xuất (theo dõi vật tư, hồ sơ thiết kế)",
+    "Lưu đồ sản xuất / Nội dung sản xuất đặc thù",
+    "Kết quả thử nghiệm điển hình (sản phẩm/linh kiện)",
+    "Chứng nhận hợp quy cho mẫu điển hình",
+    "Tài liệu kỹ thuật khác"
 ]
 
 export function ApplicationForm({ initialData, companyProfile }: ApplicationFormProps) {
@@ -162,11 +162,11 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
             if (initialData?.id) {
                 const result = await updateApplication(initialData.id, data)
                 if (result.error) {
-                    toast.error("Update Failed", { description: result.error as string })
+                    toast.error("Cập nhật thất bại", { description: result.error as string })
                     return
                 }
-                toast.success("Application Updated", {
-                    description: "Your application has been updated successfully.",
+                toast.success("Đã cập nhật đơn", {
+                    description: "Đơn đăng ký của bạn đã được cập nhật thành công.",
                 })
                 router.refresh()
                 return
@@ -175,12 +175,12 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
             const result = await createApplication(data)
 
             if (result.error) {
-                toast.error("Submission Failed", { description: result.error as string })
+                toast.error("Nộp đơn thất bại", { description: result.error as string })
                 return
             }
 
-            toast.success("Success", {
-                description: data.status === "submitted" ? "Application submitted for review." : "Draft saved."
+            toast.success("Thành công", {
+                description: data.status === "submitted" ? "Đã nộp đơn đăng ký để xem xét." : "Đã lưu nháp."
             })
 
             router.push("/audit-programs")
@@ -193,9 +193,9 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
     }
 
     const onError = (errors: any) => {
-        console.error("Form Validation Errors:", errors)
-        toast.error("Validation Failed", {
-            description: "Please check the form for errors: " + Object.keys(errors).join(", ")
+        console.error("Lỗi xác thực form:", errors)
+        toast.error("Xác thực thất bại", {
+            description: "Vui lòng kiểm tra lại các trường lỗi: " + Object.keys(errors).join(", ")
         })
     }
 
@@ -214,9 +214,9 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
             <form className="space-y-8 pb-20">
                 <Tabs defaultValue="general" className="w-full">
                     <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="general">1. General Info</TabsTrigger>
-                        <TabsTrigger value="certification">2. Certification Details</TabsTrigger>
-                        <TabsTrigger value="attachments">3. Attachments & Submit</TabsTrigger>
+                        <TabsTrigger value="general">1. Thông Tin Chung</TabsTrigger>
+                        <TabsTrigger value="certification">2. Chi Tiết Chứng Nhận</TabsTrigger>
+                        <TabsTrigger value="attachments">3. Tài Liệu & Nộp Đơn</TabsTrigger>
                     </TabsList>
 
                     {/* --- TAB 1: GENERAL INFORMATION --- */}
@@ -225,56 +225,56 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Building2 className="md:w-5 h-5" />
-                                    Organization Information
+                                    Thông Tin Tổ Chức
                                 </CardTitle>
-                                <CardDescription>Basic details about your organization.</CardDescription>
+                                <CardDescription>Thông tin cơ bản về tổ chức của bạn.</CardDescription>
                             </CardHeader>
                             <CardContent className="grid gap-6 md:grid-cols-2">
                                 <FormField control={formControl} name="companyInfo.nameVn" render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Organization Name (Vietnamese)</FormLabel>
+                                        <FormLabel>Tên Tổ Chức (Tiếng Việt)</FormLabel>
                                         <FormControl><Input placeholder="Tên tiếng Việt" {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.nameEn" render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Organization Name (English)</FormLabel>
-                                        <FormControl><Input placeholder="English Name" {...field} value={field.value ?? ""} /></FormControl>
+                                        <FormLabel>Tên Tổ Chức (Tiếng Anh)</FormLabel>
+                                        <FormControl><Input placeholder="Tên tiếng Anh" {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.foundingYear" render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Year Established</FormLabel>
+                                        <FormLabel>Năm Thành Lập</FormLabel>
                                         <FormControl><Input placeholder="YYYY" {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.taxId" render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Tax ID / Enterprise Code</FormLabel>
+                                        <FormLabel>Mã Số Thuế / GPKD</FormLabel>
                                         <FormControl><Input placeholder="Mã số thuế" {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.address" render={({ field }) => (
                                     <FormItem className="col-span-2">
-                                        <FormLabel>Headquarters Address</FormLabel>
-                                        <FormControl><Textarea placeholder="Full Address" {...field} value={field.value ?? ""} /></FormControl>
+                                        <FormLabel>Địa Chỉ Trụ Sở Chính</FormLabel>
+                                        <FormControl><Textarea placeholder="Địa chỉ đầy đủ" {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.factoryAddress" render={({ field }) => (
                                     <FormItem className="col-span-2">
-                                        <FormLabel>Factory Address (Localtion of Production)</FormLabel>
-                                        <FormControl><Textarea placeholder="Factory Address" {...field} value={field.value ?? ""} /></FormControl>
+                                        <FormLabel>Địa Chỉ Nhà Máy (Nơi Sản Xuất)</FormLabel>
+                                        <FormControl><Textarea placeholder="Địa chỉ nhà máy" {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
 
                                 <FormItem className="col-span-2">
-                                    <FormLabel>Organization Type</FormLabel>
+                                    <FormLabel>Loại Hình Tổ Chức</FormLabel>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
                                         {ORG_TYPES.map((type) => (
                                             <FormField
@@ -314,8 +314,8 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
 
                                 <FormField control={formControl} name="companyInfo.mainMarket" render={({ field }) => (
                                     <FormItem className="col-span-2">
-                                        <FormLabel>Main Market</FormLabel>
-                                        <FormControl><Input placeholder="Domestic, Export (US, EU...), etc." {...field} value={field.value ?? ""} /></FormControl>
+                                        <FormLabel>Thị Trường Chính</FormLabel>
+                                        <FormControl><Input placeholder="Trong nước, Xuất khẩu (Mỹ, EU...), v.v." {...field} value={field.value ?? ""} /></FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )} />
@@ -325,17 +325,17 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                         <div className="grid gap-6 md:grid-cols-2">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><User className="h-5 w-5" /> Representative</CardTitle>
+                                    <CardTitle className="flex items-center gap-2"><User className="h-5 w-5" /> Người Đại Diện Pháp Luật</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <FormField control={formControl} name="companyInfo.repName" render={({ field }) => (
-                                        <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Họ và Tên</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <FormField control={formControl} name="companyInfo.repPosition" render={({ field }) => (
-                                        <FormItem><FormLabel>Position</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Chức Vụ</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <FormField control={formControl} name="companyInfo.repPhone" render={({ field }) => (
-                                        <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Điện Thoại</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <FormField control={formControl} name="companyInfo.repEmail" render={({ field }) => (
                                         <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
@@ -345,17 +345,17 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
 
                             <Card>
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><User className="h-5 w-5" /> Contact Person</CardTitle>
+                                    <CardTitle className="flex items-center gap-2"><User className="h-5 w-5" /> Người Liên Hệ</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <FormField control={formControl} name="companyInfo.contactName" render={({ field }) => (
-                                        <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Họ và Tên</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <FormField control={formControl} name="companyInfo.contactPosition" render={({ field }) => (
-                                        <FormItem><FormLabel>Position</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Chức Vụ</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <FormField control={formControl} name="companyInfo.contactPhone" render={({ field }) => (
-                                        <FormItem><FormLabel>Phone</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
+                                        <FormItem><FormLabel>Điện Thoại</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
                                     )} />
                                     <FormField control={formControl} name="companyInfo.contactEmail" render={({ field }) => (
                                         <FormItem><FormLabel>Email</FormLabel><FormControl><Input {...field} value={field.value ?? ""} /></FormControl><FormMessage /></FormItem>
@@ -366,30 +366,30 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
 
                         <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><User className="h-5 w-5" /> Personnel Structure</CardTitle>
+                                <CardTitle className="flex items-center gap-2"><User className="h-5 w-5" /> Cơ Cấu Nhân Sự</CardTitle>
                             </CardHeader>
                             <CardContent className="grid gap-6 md:grid-cols-3">
                                 <FormField control={formControl} name="companyInfo.totalPersonnel" render={({ field }) => (
-                                    <FormItem><FormLabel>Total Personnel</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel>Tổng Số Nhân Sự</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.managementCount" render={({ field }) => (
-                                    <FormItem><FormLabel>Management</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel>Khối Quản Lý</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
                                 <FormField control={formControl} name="companyInfo.productionCount" render={({ field }) => (
-                                    <FormItem><FormLabel>Production</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
+                                    <FormItem><FormLabel>Khối Sản Xuất</FormLabel><FormControl><Input type="number" {...field} /></FormControl><FormMessage /></FormItem>
                                 )} />
 
                                 <div className="col-span-3">
-                                    <h4 className="text-sm font-medium mb-3">If working in shifts, please specify:</h4>
+                                    <h4 className="text-sm font-medium mb-3">Nếu làm việc theo ca, vui lòng ghi rõ số lượng:</h4>
                                     <div className="grid grid-cols-3 gap-4">
                                         <FormField control={formControl} name="companyInfo.shifts.shift1" render={({ field }) => (
-                                            <FormItem><FormLabel>Shift 1</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Ca 1</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
                                         )} />
                                         <FormField control={formControl} name="companyInfo.shifts.shift2" render={({ field }) => (
-                                            <FormItem><FormLabel>Shift 2</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Ca 2</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
                                         )} />
                                         <FormField control={formControl} name="companyInfo.shifts.shift3" render={({ field }) => (
-                                            <FormItem><FormLabel>Shift 3</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Ca 3</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
                                         )} />
                                     </div>
                                 </div>
@@ -404,8 +404,8 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="text-lg font-medium">Products</h3>
-                                    <p className="text-sm text-muted-foreground">List all products for certification.</p>
+                                    <h3 className="text-lg font-medium">Sản Phẩm</h3>
+                                    <p className="text-sm text-muted-foreground">Liệt kê tất cả sản phẩm cần chứng nhận.</p>
                                 </div>
                                 <Button type="button" variant="outline" size="sm" onClick={() => appendProduct({
                                     name: "", model: "", standard: "",
@@ -413,7 +413,7 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                     factoryAddress: form.getValues("companyInfo.address"),
                                     certificationType: "New"
                                 })}>
-                                    <Plus className="mr-2 h-4 w-4" /> Add Product
+                                    <Plus className="mr-2 h-4 w-4" /> Thêm Sản Phẩm
                                 </Button>
                             </div>
 
@@ -429,32 +429,32 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                     </CardHeader>
                                     <CardContent className="grid gap-4 pt-4 md:grid-cols-2">
                                         <FormField control={formControl} name={`products.${index}.name`} render={({ field }) => (
-                                            <FormItem><FormLabel>Product Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormItem><FormLabel>Tên Sản Phẩm</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`products.${index}.model`} render={({ field }) => (
-                                            <FormItem><FormLabel>Model / Type</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormItem><FormLabel>Kiểu Loại / Model</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`products.${index}.standard`} render={({ field }) => (
-                                            <FormItem><FormLabel>Applied Standard</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormItem><FormLabel>Tiêu Chuẩn Áp Dụng</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`products.${index}.certificationType`} render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Certification Type</FormLabel>
+                                                <FormLabel>Loại Hình Chứng Nhận</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                                                     <SelectContent>
-                                                        <SelectItem value="New">Initial (B)</SelectItem>
-                                                        <SelectItem value="Expansion">Expansion (M)</SelectItem>
-                                                        <SelectItem value="Re-assessment">Re-assessment (L)</SelectItem>
+                                                        <SelectItem value="New">Chứng nhận lần đầu (B)</SelectItem>
+                                                        <SelectItem value="Expansion">Mở rộng phạm vi (M)</SelectItem>
+                                                        <SelectItem value="Re-assessment">Tái chứng nhận (L)</SelectItem>
                                                     </SelectContent>
                                                 </Select>
                                             </FormItem>
                                         )} />
                                         <FormField control={formControl} name={`products.${index}.factoryName`} render={({ field }) => (
-                                            <FormItem><FormLabel>Factory Name</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormItem><FormLabel>Tên Nhà Máy</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`products.${index}.factoryAddress`} render={({ field }) => (
-                                            <FormItem><FormLabel>Factory Address</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormItem><FormLabel>Địa Chỉ Nhà Máy</FormLabel><FormControl><Input {...field} /></FormControl><FormMessage /></FormItem>
                                         )} />
                                     </CardContent>
                                 </Card>
@@ -465,13 +465,13 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
 
                         {/* OUTSOURCED PROCESSES */}
                         <Card>
-                            <CardHeader><CardTitle>Outsourced Processes (Thuê ngoài)</CardTitle></CardHeader>
+                            <CardHeader><CardTitle>Quá Trình Thuê Ngoài (Outsourced Processes)</CardTitle></CardHeader>
                             <CardContent>
                                 <FormField control={formControl} name="hasOutsourcedProcess" render={({ field }) => (
                                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                                         <div className="space-y-0.5">
-                                            <FormLabel className="text-base">Use of external resources?</FormLabel>
-                                            <FormDescription>Does the production involve outsourced processes affecting conformity?</FormDescription>
+                                            <FormLabel className="text-base">Có sử dụng nguồn lực bên ngoài không?</FormLabel>
+                                            <FormDescription>Quá trình sản xuất có công đoạn thuê ngoài ảnh hưởng đến sự phù hợp không?</FormDescription>
                                         </div>
                                         <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
                                     </FormItem>
@@ -479,7 +479,7 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                 {form.watch("hasOutsourcedProcess") && (
                                     <FormField control={formControl} name="outsourcedProcessDetails" render={({ field }) => (
                                         <FormItem className="mt-4">
-                                            <FormLabel>Details of outsourced processes</FormLabel>
+                                            <FormLabel>Chi tiết quá trình thuê ngoài</FormLabel>
                                             <FormControl><Textarea {...field} value={field.value ?? ""} /></FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -492,20 +492,20 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h3 className="text-lg font-medium">Multiple Locations</h3>
-                                    <p className="text-sm text-muted-foreground">If you have multiple production sites.</p>
+                                    <h3 className="text-lg font-medium">Nhiều Địa Điểm</h3>
+                                    <p className="text-sm text-muted-foreground">Nếu bạn có nhiều địa điểm sản xuất.</p>
                                 </div>
                                 <Button type="button" variant="outline" size="sm" onClick={() => appendLocation({
                                     name: "", address: "", products: "", personnelCount: 0
                                 })}>
-                                    <Plus className="mr-2 h-4 w-4" /> Add Location
+                                    <Plus className="mr-2 h-4 w-4" /> Thêm Địa Điểm
                                 </Button>
                             </div>
                             {locationFields.map((field, index) => (
                                 <Card key={field.id} className="relative border-dashed">
                                     <CardHeader className="py-3 bg-muted/30">
                                         <div className="flex justify-between items-center">
-                                            <CardTitle className="text-base">Location {index + 1}</CardTitle>
+                                            <CardTitle className="text-base">Địa Điểm {index + 1}</CardTitle>
                                             <Button type="button" variant="ghost" size="icon" className="text-destructive h-8 w-8" onClick={() => removeLocation(index)}>
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
@@ -513,16 +513,16 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                     </CardHeader>
                                     <CardContent className="grid gap-4 pt-4 md:grid-cols-2">
                                         <FormField control={formControl} name={`locations.${index}.name`} render={({ field }) => (
-                                            <FormItem><FormLabel>Site Name</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Tên Địa Điểm</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`locations.${index}.address`} render={({ field }) => (
-                                            <FormItem><FormLabel>Address</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Địa Chỉ</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`locations.${index}.products`} render={({ field }) => (
-                                            <FormItem><FormLabel>Products at Site</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Sản Phẩm Tại Địa Điểm</FormLabel><FormControl><Input {...field} /></FormControl></FormItem>
                                         )} />
                                         <FormField control={formControl} name={`locations.${index}.personnelCount`} render={({ field }) => (
-                                            <FormItem><FormLabel>Personnel Count</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
+                                            <FormItem><FormLabel>Số Lượng Nhân Sự</FormLabel><FormControl><Input type="number" {...field} /></FormControl></FormItem>
                                         )} />
                                     </CardContent>
                                 </Card>
@@ -532,25 +532,25 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                         <div className="grid gap-6 md:grid-cols-2">
                             <FormField control={formControl} name="assessmentDate" render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Proposed Assessment Date</FormLabel>
+                                    <FormLabel>Ngày Đánh Giá Dự Kiến</FormLabel>
                                     <FormControl><Input placeholder="DD/MM/YYYY" {...field} value={field.value ?? ""} /></FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )} />
 
                             <Card className="col-span-2 md:col-span-1">
-                                <CardHeader className="pb-3"><CardTitle className="text-base">Other Management Systems</CardTitle></CardHeader>
+                                <CardHeader className="pb-3"><CardTitle className="text-base">Hệ Thống Quản Lý Khác</CardTitle></CardHeader>
                                 <CardContent className="space-y-4">
                                     <FormField control={formControl} name="hasOtherSystems" render={({ field }) => (
                                         <FormItem className="flex flex-row items-center gap-2 space-y-0">
                                             <FormControl><Checkbox checked={field.value} onCheckedChange={field.onChange} /></FormControl>
-                                            <FormLabel className="font-normal">Applied ISO 9001 / ISO 14001 / ISO 45001?</FormLabel>
+                                            <FormLabel className="font-normal">Đã áp dụng ISO 9001 / ISO 14001 / ISO 45001?</FormLabel>
                                         </FormItem>
                                     )} />
                                     {form.watch("hasOtherSystems") && (
                                         <FormField control={formControl} name="otherSystemsDetails" render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Details (Standard & Cert Body)</FormLabel>
+                                                <FormLabel>Chi tiết (Tiêu chuẩn & Tổ chức chứng nhận)</FormLabel>
                                                 <FormControl><Input {...field} value={field.value ?? ""} /></FormControl>
                                             </FormItem>
                                         )} />
@@ -565,8 +565,8 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                     <TabsContent value="attachments" className="space-y-6 mt-6">
                         <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" /> Required Attachments</CardTitle>
-                                <CardDescription>Please confirm availability of the following documents:</CardDescription>
+                                <CardTitle className="flex items-center gap-2"><FileText className="h-5 w-5" /> Tài Liệu Đính Kèm</CardTitle>
+                                <CardDescription>Vui lòng đính kèm các tài liệu sau:</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <FormField
@@ -614,17 +614,17 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                     type="button"
                                     variant="destructive"
                                     onClick={async () => {
-                                        if (confirm("Are you sure you want to delete this application?")) {
+                                        if (confirm("Bạn có chắc chắn muốn xóa đơn này không?")) {
                                             setIsSubmitting(true)
                                             await deleteApplication(initialData.id)
-                                            toast.success("Deleted", { description: "Application deleted successfully" })
+                                            toast.success("Đã xóa", { description: "Đơn đăng ký đã xóa thành công" })
                                             router.push("/audit-programs")
                                         }
                                     }}
                                     disabled={isSubmitting}
                                 >
                                     <Trash2 className="mr-2 h-4 w-4" />
-                                    Delete
+                                    Xóa
                                 </Button>
                             )}
                             <Button
@@ -634,7 +634,7 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-                                Save Draft
+                                Lưu Nháp
                             </Button>
                             <Button
                                 type="button"
@@ -642,7 +642,7 @@ export function ApplicationForm({ initialData, companyProfile }: ApplicationForm
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-                                {initialData ? "Update Application" : "Submit Application"}
+                                {initialData ? "Cập Nhật Đơn" : "Nộp Đơn Đăng Ký"}
                             </Button>
                         </div>
                     </TabsContent>

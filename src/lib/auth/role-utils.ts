@@ -19,3 +19,23 @@ export async function requireRole(requiredRole: string) {
     }
     return role
 }
+
+export async function isAuditor() {
+    const role = await getUserRole()
+    return role === 'auditor' || role === 'lead_auditor'
+}
+
+export async function isLeadAuditor() {
+    const role = await getUserRole()
+    return role === 'lead_auditor'
+}
+
+export async function isAdmin() {
+    const role = await getUserRole()
+    return role === 'admin'
+}
+
+export async function isClient() {
+    const role = await getUserRole()
+    return role === 'client'
+}

@@ -1,7 +1,13 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { AuditCreationWizard } from '@/components/audit-creation/audit-creation-wizard'
 import { ClientAuditRequestForm } from '@/components/audit-creation/client-audit-request-form'
+import { AllocationManager } from '@/components/admin/allocation-manager'
+import {
+    getAppsPendingReview,
+    getAppsAccepted,
+    getAppsInProgress,
+    getAvailableAuditors
+} from '@/lib/actions/audit-allocation'
 
 export default async function NewAuditPage() {
     const supabase = await createClient()
@@ -11,29 +17,55 @@ export default async function NewAuditPage() {
         redirect('/login')
     }
 
-    // Role check to ensure only Admin/Auditor can access
+    // Role check — support both legacy `role` and new `active_role`
     const { data: profile } = await supabase
         .from('profiles')
-        .select('role')
+        .select('role, active_role')
         .eq('id', user.id)
         .single()
 
-    const isClient = profile?.role === 'client'
+    const activeRole = profile?.active_role || profile?.role
+    const isClient = activeRole === 'client'
     let clientOrgId = ''
 
     if (isClient) {
-        const { data: org } = await supabase.from('client_organizations').select('id').eq('profile_id', user.id).single()
+        const { data: org } = await supabase
+            .from('client_organizations')
+            .select('id')
+            .eq('profile_id', user.id)
+            .single()
         clientOrgId = org?.id
     }
 
+    // For Admin/Lead Auditor: fetch applications by status category
+    let pendingReview: any[] = []
+    let accepted: any[] = []
+    let inProgress: any[] = []
+    let availableAuditors: any[] = []
+
+    if (!isClient) {
+        const [pr, acc, ip, aud] = await Promise.all([
+            getAppsPendingReview(),
+            getAppsAccepted(),
+            getAppsInProgress(),
+            getAvailableAuditors()
+        ])
+        pendingReview = pr
+        accepted = acc
+        inProgress = ip
+        availableAuditors = aud
+    }
+
     return (
-        <div className="container max-w-4xl py-10">
+        <div className="container max-w-5xl py-10">
             <div className="mb-8">
-                <h1 className="text-3xl font-bold tracking-tight">Create Audit Program</h1>
+                <h1 className="text-3xl font-bold tracking-tight">
+                    {isClient ? 'Nộp Đơn Đăng Ký Đánh Giá' : 'Xem Xét & Phân Công'}
+                </h1>
                 <p className="text-muted-foreground">
                     {isClient
-                        ? 'Submit a request for a new audit scope or application.'
-                        : 'Initialize a new certification audit by selecting a client and application context.'
+                        ? 'Nộp đơn đăng ký chứng nhận sản phẩm theo ISO/IEC 17065.'
+                        : 'Xem xét hồ sơ đăng ký và phân công đoàn đánh giá.'
                     }
                 </p>
             </div>
@@ -41,7 +73,12 @@ export default async function NewAuditPage() {
             {isClient ? (
                 <ClientAuditRequestForm clientOrgId={clientOrgId} />
             ) : (
-                <AuditCreationWizard />
+                <AllocationManager
+                    pendingReview={pendingReview}
+                    accepted={accepted}
+                    inProgress={inProgress}
+                    availableAuditors={availableAuditors}
+                />
             )}
         </div>
     )

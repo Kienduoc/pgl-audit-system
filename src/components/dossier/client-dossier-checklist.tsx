@@ -34,7 +34,7 @@ export function ClientDossierChecklist({ applicationId, auditId, isReadOnly = fa
         const fetchDossier = async () => {
             const { data, error } = await getDossierItems(applicationId)
             if (error) {
-                toast.error('Failed to load dossier files')
+                toast.error('Không thể tải hồ sơ')
             } else {
                 setDossierFiles(data || [])
             }
@@ -58,7 +58,7 @@ export function ClientDossierChecklist({ applicationId, auditId, isReadOnly = fa
         if (result.error) {
             toast.error(result.error)
         } else {
-            toast.success('File uploaded successfully')
+            toast.success('Tải lên thành công')
             // Refresh local state (or refetch)
             const { data } = await getDossierItems(applicationId)
             setDossierFiles(data || [])
@@ -68,30 +68,30 @@ export function ClientDossierChecklist({ applicationId, auditId, isReadOnly = fa
     }
 
     const handleDelete = async (fileId: string, filePath: string) => {
-        if (!confirm('Are you sure you want to delete this file?')) return
+        if (!confirm('Bạn có chắc chắn muốn xóa tệp này?')) return
 
         const result = await deleteDossierItem(auditId, fileId, filePath, pathname)
         if (result.error) {
             toast.error(result.error)
         } else {
-            toast.success('File deleted')
+            toast.success('Đã xóa tệp')
             setDossierFiles(prev => prev.filter(f => f.id !== fileId))
         }
     }
 
     const handleSubmitDossier = async () => {
-        if (!confirm('Confirm submission? You may not be able to edit after this.')) return
+        if (!confirm('Xác nhận gửi? Bạn có thể không chỉnh sửa được sau thao tác này.')) return
 
         const result = await submitDossier(applicationId, auditId, pathname)
         if (result.error) {
             toast.error(result.error)
         } else {
-            toast.success('Dossier submitted successfully!')
+            toast.success('Gửi hồ sơ thành công!')
             router.refresh()
         }
     }
 
-    if (loading) return <div>Loading dossier...</div>
+    if (loading) return <div>Đang tải hồ sơ...</div>
 
     return (
         <div className="space-y-8">
@@ -109,12 +109,12 @@ export function ClientDossierChecklist({ applicationId, auditId, isReadOnly = fa
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-medium">{item.label}</span>
-                                                {item.required && <Badge variant="secondary">Required</Badge>}
+                                                {item.required && <Badge variant="secondary">Bắt Buộc</Badge>}
                                                 {files.length > 0 && <CheckCircle2 className="w-4 h-4 text-green-500" />}
                                             </div>
                                             {files.length > 0 && (
                                                 <div className="text-sm text-gray-500">
-                                                    {files.length} file(s) uploaded
+                                                    {files.length} tệp đã tải lên
                                                 </div>
                                             )}
                                         </div>
@@ -138,7 +138,7 @@ export function ClientDossierChecklist({ applicationId, auditId, isReadOnly = fa
                                                     className="cursor-pointer"
                                                 >
                                                     <span>
-                                                        {isUploading ? 'Uploading...' : 'Upload'}
+                                                        {isUploading ? 'Đang tải...' : 'Tải Lên'}
                                                         <Upload className="w-4 h-4 ml-2" />
                                                     </span>
                                                 </Button>
@@ -175,7 +175,7 @@ export function ClientDossierChecklist({ applicationId, auditId, isReadOnly = fa
 
             <div className="flex justify-end pt-6 border-t">
                 <Button size="lg" onClick={handleSubmitDossier} disabled={isReadOnly}>
-                    Gửi Hồ sơ (Submit Dossier)
+                    Gửi Hồ sơ Nghiệm Thu
                 </Button>
             </div>
         </div>

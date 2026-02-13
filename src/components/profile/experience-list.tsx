@@ -79,43 +79,43 @@ export function ExperienceList({ initialData }: { initialData: Experience[] }) {
         }
 
         if (error) {
-            toast.error('Failed to save')
+            toast.error('Lưu thất bại')
             return
         }
 
         if (isEditing) {
             setExperiences(experiences.map(e => e.id === isEditing ? data : e))
-            toast.success('Experience updated')
+            toast.success('Đã cập nhật kinh nghiệm')
         } else {
             setExperiences([data, ...experiences])
-            toast.success('Experience added')
+            toast.success('Đã thêm kinh nghiệm')
         }
         resetForm()
         router.refresh()
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure?")) return
+        if (!confirm("Bạn có chắc chắn không?")) return
         const supabase = createClient()
         const { error } = await supabase.from('user_experiences').delete().eq('id', id)
 
         if (error) {
-            toast.error('Failed to delete')
+            toast.error('Xóa thất bại')
             return
         }
         setExperiences(experiences.filter(e => e.id !== id))
-        toast.success('Deleted')
+        toast.success('Đã xóa')
         router.refresh()
     }
 
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Work Experience</h3>
+                <h3 className="text-lg font-medium">Kinh Nghiệm Làm Việc</h3>
                 {!isAdding && (
                     <Button size="sm" onClick={() => { setIsAdding(true); setFormData({}) }}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Experience
+                        Thêm Kinh Nghiệm
                     </Button>
                 )}
             </div>
@@ -123,38 +123,38 @@ export function ExperienceList({ initialData }: { initialData: Experience[] }) {
             {isAdding && (
                 <Card className="border-primary/20 bg-primary/5">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-base">{isEditing ? 'Edit Experience' : 'New Experience'}</CardTitle>
+                        <CardTitle className="text-base">{isEditing ? 'Chỉnh Sửa Kinh Nghiệm' : 'Kinh Nghiệm Mới'}</CardTitle>
                         <Button variant="ghost" size="sm" onClick={resetForm}><X className="h-4 w-4" /></Button>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSave} className="space-y-4 mt-2">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Company</Label>
+                                    <Label>Công Ty</Label>
                                     <Input name="company" defaultValue={formData.company} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Position</Label>
+                                    <Label>Vị Trí</Label>
                                     <Input name="position" defaultValue={formData.position} required />
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="space-y-2">
-                                        <Label>Start Date</Label>
+                                        <Label>Ngày Bắt Đầu</Label>
                                         <Input type="date" name="start_date" defaultValue={formData.start_date} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label>End Date</Label>
+                                        <Label>Ngày Kết Thúc</Label>
                                         <Input type="date" name="end_date" defaultValue={formData.end_date} />
                                     </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Description</Label>
-                                <Textarea name="description" defaultValue={formData.description} placeholder="Responsibilities and achievements..." />
+                                <Label>Mô Tả</Label>
+                                <Textarea name="description" defaultValue={formData.description} placeholder="Trách nhiệm và thành tích..." />
                             </div>
                             <div className="flex justify-end gap-2">
-                                <Button type="button" variant="ghost" onClick={resetForm}>Cancel</Button>
-                                <Button type="submit">Save</Button>
+                                <Button type="button" variant="ghost" onClick={resetForm}>Hủy</Button>
+                                <Button type="submit">Lưu</Button>
                             </div>
                         </form>
                     </CardContent>
@@ -174,7 +174,7 @@ export function ExperienceList({ initialData }: { initialData: Experience[] }) {
                                         <h4 className="font-semibold">{exp.position}</h4>
                                         <p className="text-sm font-medium">{exp.company}</p>
                                         <p className="text-xs text-muted-foreground mt-1">
-                                            {exp.start_date || 'N/A'} - {exp.end_date || 'Present'}
+                                            {exp.start_date || 'N/A'} - {exp.end_date || 'Hiện Tại'}
                                         </p>
                                         {exp.description && <p className="text-sm mt-2 text-muted-foreground">{exp.description}</p>}
                                     </div>
@@ -193,7 +193,7 @@ export function ExperienceList({ initialData }: { initialData: Experience[] }) {
                 ))}
                 {!experiences.length && !isAdding && (
                     <div className="text-center py-8 text-muted-foreground border rounded-lg border-dashed">
-                        No work experience records found.
+                        Không tìm thấy hồ sơ kinh nghiệm làm việc.
                     </div>
                 )}
             </div>

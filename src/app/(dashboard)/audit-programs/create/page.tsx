@@ -11,23 +11,23 @@ export default async function CreateAuditProgramPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-6 p-6 pb-16">
             <div>
-                <h2 className="text-3xl font-bold tracking-tight">Create Audit Program</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Tạo Chương Trình Đánh Giá</h2>
                 <p className="text-muted-foreground">
-                    Submit a request for a new product certification scope.
+                    Nộp đơn đăng ký mở rộng phạm vi chứng nhận sản phẩm.
                 </p>
             </div>
             <Separator />
 
             <Alert>
                 <Info className="h-4 w-4" />
-                <AlertTitle>Instructions</AlertTitle>
+                <AlertTitle>Hướng Dẫn</AlertTitle>
                 <AlertDescription>
-                    Please fill in the product details carefully. You can add multiple products to a single application.
-                    Company information is pre-filled from your profile but can be edited if necessary for this specific application.
+                    Vui lòng điền chi tiết sản phẩm cẩn thận. Bạn có thể thêm nhiều sản phẩm vào cùng một đơn đăng ký.
+                    Thông tin công ty được điền sẵn từ hồ sơ của bạn nhưng có thể chỉnh sửa nếu cần thiết cho đơn đăng ký này.
                 </AlertDescription>
             </Alert>
 
-            <Suspense fallback={<div className="p-8 text-center">Loading profile...</div>}>
+            <Suspense fallback={<div className="p-8 text-center">Đang tải hồ sơ...</div>}>
                 <ApplicationForm companyProfile={profile} />
             </Suspense>
         </div>

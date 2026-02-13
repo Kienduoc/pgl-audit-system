@@ -22,12 +22,12 @@ export function OrgProfileSummary({ profile, org }: OrgProfileSummaryProps) {
                         </Avatar>
                     )}
                     <CardTitle className="text-lg font-medium">
-                        Organization Profile
+                        Hồ Sơ Doanh Nghiệp
                     </CardTitle>
                 </div>
                 <Link href="/profile/settings">
                     <Button variant="ghost" size="sm" className="h-9 text-sm">
-                        Edit
+                        Chỉnh Sửa
                     </Button>
                 </Link>
             </CardHeader>
@@ -40,7 +40,7 @@ export function OrgProfileSummary({ profile, org }: OrgProfileSummaryProps) {
                             <MapPin className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Address</p>
+                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">ĐỊA CHỈ</p>
                             <p className="text-base truncate" title={org?.office_address || org?.factory_address || profile?.address}>
                                 {org?.office_address || org?.factory_address || profile?.address || "N/A"}
                             </p>
@@ -52,7 +52,7 @@ export function OrgProfileSummary({ profile, org }: OrgProfileSummaryProps) {
                             <Phone className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Contact</p>
+                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">LIÊN HỆ</p>
                             <p className="text-sm">{org?.contact_phone || profile?.phone || "N/A"}</p>
                         </div>
                     </div>
@@ -62,7 +62,7 @@ export function OrgProfileSummary({ profile, org }: OrgProfileSummaryProps) {
                             <FileText className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Tax Code</p>
+                            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">MÃ SỐ THUẾ</p>
                             <p className="text-sm">{org?.tax_code || "N/A"}</p>
                         </div>
                     </div>

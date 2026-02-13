@@ -12,9 +12,9 @@ export default async function AuditFindingsPage({ params }: { params: Promise<{ 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Audit Findings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Phát Hiện Đánh Giá</h1>
         <p className="text-muted-foreground">
-          Record findings using the checklist below. Review summary in the table.
+          Ghi nhận các phát hiện đánh giá. Xem tóm tắt trong bảng dưới đây.
         </p>
       </div>
 
@@ -23,7 +23,7 @@ export default async function AuditFindingsPage({ params }: { params: Promise<{ 
 
       {/* Findings Table Section - The "4-Column Structure" */}
       <div>
-        <h2 className="text-xl font-semibold mb-4 text-slate-800">2. Findings Summary (NCs)</h2>
+        <h2 className="text-xl font-semibold mb-4 text-slate-800">2. Tóm Tắt Phát Hiện (NCs)</h2>
         <AuditFindingsManager
           initialFindings={findings || []}
           userRole={userRole}

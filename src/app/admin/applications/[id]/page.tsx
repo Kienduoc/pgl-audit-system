@@ -8,7 +8,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 interface PageProps {
-    params: { id: string }
+    params: Promise<{ id: string }>
 }
 
 async function ReviewContent({ id }: { id: string }) {
@@ -52,10 +52,11 @@ async function ReviewContent({ id }: { id: string }) {
     )
 }
 
-export default function ReviewPage({ params }: PageProps) {
+export default async function ReviewPage({ params }: PageProps) {
+    const { id } = await params
     return (
         <Suspense fallback={<div>Loading application...</div>}>
-            <ReviewContent id={params.id} />
+            <ReviewContent id={id} />
         </Suspense>
     )
 }

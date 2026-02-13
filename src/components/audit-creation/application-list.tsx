@@ -18,15 +18,15 @@ export function ApplicationList({ applications, onSelect, onCreateNew }: Applica
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <h3 className="text-sm font-medium">Existing Applications</h3>
+                <h3 className="text-sm font-medium">Đơn Đăng Ký Hiện Có</h3>
                 <Button variant="secondary" size="sm" onClick={onCreateNew}>
-                    + Create New Application
+                    + Tạo Đơn Mới
                 </Button>
             </div>
 
             {applications.length === 0 ? (
                 <div className="text-center p-6 border border-dashed rounded-lg text-muted-foreground">
-                    <p>No active applications found for this client.</p>
+                    <p>Không tìm thấy đơn đăng ký nào cho khách hàng này.</p>
                 </div>
             ) : (
                 <div className="grid gap-3">
@@ -51,7 +51,7 @@ export function ApplicationList({ applications, onSelect, onCreateNew }: Applica
                                 <div className="flex items-center gap-3">
                                     <Link href={`/profile/applications/${app.id}/dossier`}>
                                         <Button variant="outline" size="sm" className="h-8">
-                                            <FileIcon className="h-3 w-3 mr-2" /> Dossier
+                                            <FileIcon className="h-3 w-3 mr-2" /> Hồ Sơ
                                         </Button>
                                     </Link>
                                     <Badge variant="outline">{app.certification_type}</Badge>

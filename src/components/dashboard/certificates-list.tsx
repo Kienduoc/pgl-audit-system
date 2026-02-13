@@ -8,7 +8,7 @@ export function CertificatesList({ certificates }: { certificates: any[] }) {
     return (
         <div className="h-full flex flex-col">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-base text-muted-foreground uppercase tracking-wider">Certified Products</h3>
+                <h3 className="font-semibold text-base text-muted-foreground uppercase tracking-wider">Sản Phẩm Đã Chứng Nhận</h3>
             </div>
             <div className="space-y-3 flex-1 overflow-auto">
                 {certificates.map((cert) => (
@@ -24,12 +24,12 @@ export function CertificatesList({ certificates }: { certificates: any[] }) {
                         </div>
                         <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-full">
                             <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <span className="sr-only">View</span>
+                            <span className="sr-only">Xem</span>
                         </Button>
                     </div>
                 ))}
                 {certificates.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground text-xs">No certified products found.</div>
+                    <div className="text-center py-8 text-muted-foreground text-xs">Không tìm thấy sản phẩm nào được chứng nhận.</div>
                 )}
             </div>
         </div>

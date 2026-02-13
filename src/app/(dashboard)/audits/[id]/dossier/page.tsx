@@ -18,7 +18,7 @@ export default async function AuditDossierPage({
         .single()
 
     if (!audit) {
-        return <div>Audit not found</div>
+        return <div>Không tìm thấy đánh giá</div>
     }
 
     const { data: { user } } = await supabase.auth.getUser()

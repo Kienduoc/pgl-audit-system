@@ -39,14 +39,14 @@ async function ApplicationList() {
             <div className="flex h-[450px] shrink-0 items-center justify-center rounded-md border border-dashed">
                 <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
                     <FileText className="h-10 w-10 text-muted-foreground" />
-                    <h3 className="mt-4 text-lg font-semibold">No applications found</h3>
+                    <h3 className="mt-4 text-lg font-semibold">Không tìm thấy chương trình nào</h3>
                     <p className="mb-4 mt-2 text-sm text-muted-foreground">
-                        You haven't submitted any audit program applications yet.
+                        Bạn chưa nộp đơn đăng ký chương trình đánh giá nào.
                     </p>
                     <Button asChild>
                         <Link href="/audit-programs/create">
                             <Plus className="mr-2 h-4 w-4" />
-                            Create Application
+                            Tạo Hồ Sơ Mới
                         </Link>
                     </Button>
                 </div>
@@ -59,11 +59,11 @@ async function ApplicationList() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Company</TableHead>
-                        <TableHead>Products</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Submitted On</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
+                        <TableHead>Công Ty</TableHead>
+                        <TableHead>Sản Phẩm</TableHead>
+                        <TableHead>Trạng Thái</TableHead>
+                        <TableHead>Ngày Nộp</TableHead>
+                        <TableHead className="text-right">Hành Động</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -83,7 +83,7 @@ async function ApplicationList() {
                             </TableCell>
                             <TableCell className="text-right">
                                 <Button variant="ghost" size="sm" asChild>
-                                    <Link href={`/audit-programs/${app.id}`}>View</Link>
+                                    <Link href={`/audit-programs/${app.id}`}>Xem</Link>
                                 </Button>
                             </TableCell>
                         </TableRow>
@@ -99,23 +99,23 @@ export default function AuditProgramsPage() {
         <div className="h-full flex-1 flex-col space-y-8 p-8 flex">
             <div className="flex items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-2xl font-bold tracking-tight">Audit Programs</h2>
+                    <h2 className="text-2xl font-bold tracking-tight">Chương Trình Đánh Giá</h2>
                     <p className="text-muted-foreground">
-                        Manage your product certification applications and audit scopes.
+                        Quản lý các đơn đăng ký chứng nhận và phạm vi đánh giá.
                     </p>
                 </div>
                 <div className="flex items-center space-x-2">
                     <Button asChild>
                         <Link href="/audit-programs/create">
                             <Plus className="mr-2 h-4 w-4" />
-                            New Application
+                            Tạo Đơn Mới
                         </Link>
                     </Button>
                 </div>
             </div>
             <Separator />
 
-            <Suspense fallback={<div>Loading applications...</div>}>
+            <Suspense fallback={<div>Đang tải dữ liệu...</div>}>
                 <ApplicationList />
             </Suspense>
         </div>

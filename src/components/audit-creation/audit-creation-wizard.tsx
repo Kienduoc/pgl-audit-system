@@ -114,19 +114,19 @@ export function AuditCreationWizard() {
         <div className="max-w-3xl mx-auto space-y-8">
             {/* Progress Header */}
             <div className="flex justify-between items-center mb-8">
-                <div className={`text-sm font-medium ${step === 'CLIENT' ? 'text-primary' : 'text-muted-foreground'}`}>1. Client</div>
+                <div className={`text-sm font-medium ${step === 'CLIENT' ? 'text-primary' : 'text-muted-foreground'}`}>1. Khách Hàng</div>
                 <Separator className="w-10" />
-                <div className={`text-sm font-medium ${step === 'APPLICATION' ? 'text-primary' : 'text-muted-foreground'}`}>2. Application</div>
+                <div className={`text-sm font-medium ${step === 'APPLICATION' ? 'text-primary' : 'text-muted-foreground'}`}>2. Đơn Đăng Ký</div>
                 <Separator className="w-10" />
-                <div className={`text-sm font-medium ${step === 'CONFIG' ? 'text-primary' : 'text-muted-foreground'}`}>3. Configuration</div>
+                <div className={`text-sm font-medium ${step === 'CONFIG' ? 'text-primary' : 'text-muted-foreground'}`}>3. Cấu Hình</div>
             </div>
 
             {/* Step 1: Client Selection */}
             {step === 'CLIENT' && (
                 <div className="space-y-6">
                     <div>
-                        <h2 className="text-xl font-bold">Select Client</h2>
-                        <p className="text-muted-foreground">Who is this audit for?</p>
+                        <h2 className="text-xl font-bold">Chọn Khách Hàng</h2>
+                        <p className="text-muted-foreground">Đánh giá này dành cho ai?</p>
                     </div>
                     <ClientSelector onSelect={handleClientSelect} onNewClient={handleNewClient} />
                 </div>
@@ -137,10 +137,10 @@ export function AuditCreationWizard() {
                 <div className="space-y-6">
                     <div className="flex justify-between">
                         <div>
-                            <h2 className="text-xl font-bold">Application Context</h2>
-                            <p className="text-muted-foreground">Client: {selectedClient?.english_name}</p>
+                            <h2 className="text-xl font-bold">Thông Tin Đơn Đăng Ký</h2>
+                            <p className="text-muted-foreground">Khách hàng: {selectedClient?.english_name}</p>
                         </div>
-                        <Button variant="ghost" onClick={() => setStep('CLIENT')}>Change Client</Button>
+                        <Button variant="ghost" onClick={() => setStep('CLIENT')}>Đổi Khách Hàng</Button>
                     </div>
 
                     {isCreatingApp ? (
@@ -174,37 +174,37 @@ export function AuditCreationWizard() {
                 <div className="space-y-6">
                     <div className="flex justify-between">
                         <div>
-                            <h2 className="text-xl font-bold">Audit Configuration</h2>
-                            <p className="text-muted-foreground">Finalize audit details before creation.</p>
+                            <h2 className="text-xl font-bold">Cấu Hình Đánh Giá</h2>
+                            <p className="text-muted-foreground">Hoàn tất chi tiết đánh giá trước khi tạo.</p>
                         </div>
-                        <Button variant="ghost" onClick={() => setStep('APPLICATION')}>Back</Button>
+                        <Button variant="ghost" onClick={() => setStep('APPLICATION')}>Quay Lại</Button>
                     </div>
 
                     <div className="bg-muted p-4 rounded-lg space-y-2 mb-6 text-sm">
-                        <div className="flex justify-between"><span>Client:</span> <span className="font-medium">{selectedClient?.english_name}</span></div>
-                        <div className="flex justify-between"><span>Product:</span> <span className="font-medium">{selectedApplication?.product_name}</span></div>
-                        <div className="flex justify-between"><span>Standard:</span> <span className="font-medium">{selectedApplication?.applied_standard}</span></div>
-                        <div className="flex justify-between"><span>App Type:</span> <Badge>{selectedApplication?.certification_type}</Badge></div>
+                        <div className="flex justify-between"><span>Khách Hàng:</span> <span className="font-medium">{selectedClient?.english_name}</span></div>
+                        <div className="flex justify-between"><span>Sản Phẩm:</span> <span className="font-medium">{selectedApplication?.product_name}</span></div>
+                        <div className="flex justify-between"><span>Tiêu Chuẩn:</span> <span className="font-medium">{selectedApplication?.applied_standard}</span></div>
+                        <div className="flex justify-between"><span>Loại Đơn:</span> <Badge>{selectedApplication?.certification_type}</Badge></div>
                     </div>
 
                     <div className="grid gap-4 bg-card border p-6 rounded-lg">
                         <div>
-                            <Label>Audit Type</Label>
+                            <Label>Loại Đánh Giá</Label>
                             <Select
                                 value={auditConfig.audit_type}
                                 onValueChange={v => setAuditConfig({ ...auditConfig, audit_type: v })}
                             >
                                 <SelectTrigger><SelectValue /></SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="initial">Initial</SelectItem>
-                                    <SelectItem value="surveillance">Surveillance</SelectItem>
-                                    <SelectItem value="reassessment">Re-assessment</SelectItem>
+                                    <SelectItem value="initial">Đánh Giá Lần Đầu</SelectItem>
+                                    <SelectItem value="surveillance">Đánh Giá Giám Sát</SelectItem>
+                                    <SelectItem value="reassessment">Đánh Giá Lại</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         <div>
-                            <Label>Proposed Audit Date</Label>
+                            <Label>Ngày Đánh Giá Dự Kiến</Label>
                             <Input
                                 type="date"
                                 value={auditConfig.audit_date}
@@ -213,12 +213,12 @@ export function AuditCreationWizard() {
                         </div>
 
                         <div>
-                            <Label>Lead Auditor</Label>
+                            <Label>Trưởng Đoàn Đánh Giá</Label>
                             <Select
                                 value={auditConfig.lead_auditor_id}
                                 onValueChange={v => setAuditConfig({ ...auditConfig, lead_auditor_id: v })}
                             >
-                                <SelectTrigger><SelectValue placeholder="Select Lead Auditor" /></SelectTrigger>
+                                <SelectTrigger><SelectValue placeholder="Chọn Trưởng Đoàn" /></SelectTrigger>
                                 <SelectContent>
                                     {auditors.map((a: any) => (
                                         <SelectItem key={a.id} value={a.id}>{a.full_name}</SelectItem>
@@ -230,7 +230,7 @@ export function AuditCreationWizard() {
 
                     <Button className="w-full" size="lg" onClick={handleAuditCreate} disabled={loading}>
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                        Create Audit Program
+                        Tạo Chương Trình Đánh Giá
                     </Button>
                 </div>
             )}

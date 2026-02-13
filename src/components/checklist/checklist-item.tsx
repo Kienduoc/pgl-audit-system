@@ -62,9 +62,17 @@ function StatusBadge({ status }: { status: string }) {
         na: 'outline'
     }
 
+    const labels: Record<string, string> = {
+        pass: 'ĐẠT',
+        fail: 'KHÔNG ĐẠT',
+        observation: 'QUAN SÁT',
+        pending: 'CHỜ',
+        na: 'N/A'
+    }
+
     return (
         <Badge variant={variants[status] || 'outline'}>
-            {status.toUpperCase()}
+            {labels[status] || status.toUpperCase()}
         </Badge>
     )
 }

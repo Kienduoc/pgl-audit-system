@@ -67,7 +67,7 @@ export function CertificateList({ initialData }: { initialData: Certificate[] })
                 .upload(fileName, file)
 
             if (uploadError) {
-                toast.error('Upload failed: ' + uploadError.message)
+                toast.error('Tải lên thất bại: ' + uploadError.message)
                 setIsUploading(false)
                 return
             }
@@ -109,39 +109,39 @@ export function CertificateList({ initialData }: { initialData: Certificate[] })
         setIsUploading(false)
 
         if (error) {
-            toast.error('Failed to save')
+            toast.error('Lưu thất bại')
             return
         }
 
         if (isEditing) {
             setCerts(certs.map(c => c.id === isEditing ? data : c))
-            toast.success('Certificate updated')
+            toast.success('Đã cập nhật chứng chỉ')
         } else {
             setCerts([data, ...certs])
-            toast.success('Certificate added')
+            toast.success('Đã thêm chứng chỉ')
         }
         resetForm()
         router.refresh()
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure?")) return
+        if (!confirm("Bạn có chắc chắn không?")) return
         const supabase = createClient()
         const { error } = await supabase.from('user_certificates').delete().eq('id', id)
 
         if (error) {
-            toast.error('Failed to delete')
+            toast.error('Xóa thất bại')
             return
         }
         setCerts(certs.filter(c => c.id !== id))
-        toast.success('Deleted')
+        toast.success('Đã xóa')
         router.refresh()
     }
 
     const handleViewProof = async (path: string) => {
         const { signedUrl, error } = await getSignedDocumentUrl(path)
         if (error) {
-            toast.error("Could not generate link")
+            toast.error("Không thể tạo liên kết")
             return
         }
         if (signedUrl) {
@@ -152,11 +152,11 @@ export function CertificateList({ initialData }: { initialData: Certificate[] })
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Certificates & Licenses</h3>
+                <h3 className="text-lg font-medium">Chứng Chỉ & Bằng Cấp</h3>
                 {!isAdding && (
                     <Button size="sm" onClick={() => { setIsAdding(true); setFormData({}) }}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Certificate
+                        Thêm Chứng Chỉ
                     </Button>
                 )}
             </div>
@@ -164,51 +164,51 @@ export function CertificateList({ initialData }: { initialData: Certificate[] })
             {isAdding && (
                 <Card className="border-primary/20 bg-primary/5">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-base">{isEditing ? 'Edit Certificate' : 'New Certificate'}</CardTitle>
+                        <CardTitle className="text-base">{isEditing ? 'Chỉnh Sửa Chứng Chỉ' : 'Chứng Chỉ Mới'}</CardTitle>
                         <Button variant="ghost" size="sm" onClick={resetForm}><X className="h-4 w-4" /></Button>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSave} className="space-y-4 mt-2">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Name</Label>
+                                    <Label>Tên</Label>
                                     <Input name="name" defaultValue={formData.name} required placeholder="ISO 17065 Lead Auditor" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Issuing Organization</Label>
+                                    <Label>Tổ Chức Cấp</Label>
                                     <Input name="issuing_org" defaultValue={formData.issuing_org} placeholder="IRCA / Exemplar Global" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="space-y-2">
-                                        <Label>Issue Date</Label>
+                                        <Label>Ngày Cấp</Label>
                                         <Input type="date" name="issue_date" defaultValue={formData.issue_date} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label>Expiry Date</Label>
+                                        <Label>Ngày Hết Hạn</Label>
                                         <Input type="date" name="expiry_date" defaultValue={formData.expiry_date} />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Credential ID</Label>
-                                    <Input name="credential_id" defaultValue={formData.credential_id} placeholder="Optional" />
+                                    <Label>Số Hiệu/ID</Label>
+                                    <Input name="credential_id" defaultValue={formData.credential_id} placeholder="Tùy Chọn" />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Proof Document (PDF/Image)</Label>
+                                <Label>Tài Liệu Minh Chứng (PDF/Ảnh)</Label>
                                 <div className="flex gap-2 items-center">
                                     <Input type="file" ref={fileInputRef} accept=".pdf,image/*" className="bg-background" />
                                 </div>
                                 {formData.document_url && (
-                                    <p className="text-xs text-muted-foreground">Current file attached. Upload new to replace.</p>
+                                    <p className="text-xs text-muted-foreground">Đang có tệp đính kèm. Tải lên mới để thay thế.</p>
                                 )}
                             </div>
 
                             <div className="flex justify-end gap-2">
-                                <Button type="button" variant="ghost" onClick={resetForm}>Cancel</Button>
+                                <Button type="button" variant="ghost" onClick={resetForm}>Hủy</Button>
                                 <Button type="submit" disabled={isUploading}>
                                     {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Save
+                                    Lưu
                                 </Button>
                             </div>
                         </form>
@@ -241,7 +241,7 @@ export function CertificateList({ initialData }: { initialData: Certificate[] })
                                                     className="h-auto p-0 text-blue-600 font-semibold"
                                                     onClick={() => handleViewProof(cert.document_url!)}
                                                 >
-                                                    <FileText className="h-3 w-3 mr-1" /> View Proof
+                                                    <FileText className="h-3 w-3 mr-1" /> Xem Minh Chứng
                                                 </Button>
                                             </div>
                                         )}
@@ -261,7 +261,7 @@ export function CertificateList({ initialData }: { initialData: Certificate[] })
                 ))}
                 {!certs.length && !isAdding && (
                     <div className="text-center py-8 text-muted-foreground border rounded-lg border-dashed">
-                        No certificates found.
+                        Chưa có chứng chỉ nào.
                     </div>
                 )}
             </div>

@@ -28,7 +28,7 @@ export async function getClientDashboardStats(userId: string) {
         // 4. Applications List (Fetch more for the list view)
         supabase
             .from('audit_applications')
-            .select('id, status, created_at, content')
+            .select('id, status, created_at, content, product_name, review_notes, revision_count')
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
             .limit(20),

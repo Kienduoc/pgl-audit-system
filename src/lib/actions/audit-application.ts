@@ -22,10 +22,14 @@ export async function createApplication(data: AuditApplicationFormValues) {
     }
 
     // 3. Insert into DB
+    const mainProduct = data.products?.[0] || { name: 'Unknown', standard: 'Unknown' }
+
     const { data: application, error } = await supabase
         .from('audit_applications')
         .insert({
             user_id: user.id,
+            product_name: mainProduct.name,
+            standard_applied: mainProduct.standard,
             status: data.status,
             content: validatedFields.data,
         })
@@ -34,7 +38,7 @@ export async function createApplication(data: AuditApplicationFormValues) {
 
     if (error) {
         console.error("Database Error:", error)
-        return { error: "Failed to create application" }
+        return { error: `Failed to create application: ${error.message} (${error.code})` }
     }
 
     // 4. Sync Profile Data (Async, non-blocking desirable but await for now to ensure consistency)
@@ -59,9 +63,13 @@ export async function updateApplication(id: string, data: AuditApplicationFormVa
     if (!user) return { error: "Unauthorized" }
 
     // 3. Update DB
+    const mainProduct = data.products?.[0] || { name: 'Unknown', standard: 'Unknown' }
+
     const { error } = await supabase
         .from('audit_applications')
         .update({
+            product_name: mainProduct.name,
+            standard_applied: mainProduct.standard,
             status: data.status,
             content: validatedFields.data,
             updated_at: new Date().toISOString()

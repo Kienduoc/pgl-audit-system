@@ -25,7 +25,7 @@ export default async function AuditChecklistPage({ params }: { params: Promise<{
                 </div>
             </div>
 
-            <Suspense fallback={<div>Loading checklist...</div>}>
+            <Suspense fallback={<div>Đang tải danh mục kiểm tra...</div>}>
                 <AuditChecklistManager
                     auditId={id}
                     templates={templates}

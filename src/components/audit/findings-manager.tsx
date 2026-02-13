@@ -69,30 +69,30 @@ export default function AuditFindingsManager({ initialFindings, userRole }: Prop
         try {
             const res = await updateFindingStatus(id, newStatus)
             if (res.success) {
-                toast.success(`Status updated to ${newStatus}`)
+                toast.success(`Trạng thái đã được cập nhật thành ${newStatus}`)
                 // Optimistic update
                 setFindings(prev => prev.map(f => f.id === id ? { ...f, status: newStatus } : f))
             } else {
                 toast.error(res.error)
             }
         } catch (e) {
-            toast.error('Failed to update status')
+            toast.error('Cập nhật trạng thái thất bại')
         }
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Are you sure you want to delete this finding?')) return
+        if (!confirm('Bạn có chắc chắn muốn xóa phát hiện này không?')) return
 
         try {
             const res = await deleteFinding(id)
             if (res.success) {
-                toast.success('Finding deleted')
+                toast.success('Đã xóa phát hiện')
                 setFindings(prev => prev.filter(f => f.id !== id))
             } else {
                 toast.error(res.error)
             }
         } catch (e) {
-            toast.error('Delete failed')
+            toast.error('Xóa thất bại')
         }
     }
 
@@ -131,8 +131,8 @@ export default function AuditFindingsManager({ initialFindings, userRole }: Prop
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <div>
-                        <CardTitle>Non-Conformities & Findings</CardTitle>
-                        <CardDescription>Review, approve, and manage audit findings.</CardDescription>
+                        <CardTitle>Sự Không Phù Hợp & Phát Hiện</CardTitle>
+                        <CardDescription>Xem xét, phê duyệt và quản lý các phát hiện đánh giá.</CardDescription>
                     </div>
                 </div>
             </CardHeader>
@@ -140,11 +140,11 @@ export default function AuditFindingsManager({ initialFindings, userRole }: Prop
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="text-base font-bold text-slate-900">Grade</TableHead>
-                            <TableHead className="text-base font-bold text-slate-900">Clause / Requirement</TableHead>
-                            <TableHead className="text-base font-bold text-slate-900">Description</TableHead>
-                            <TableHead className="text-base font-bold text-slate-900">Status</TableHead>
-                            <TableHead className="text-right text-base font-bold text-slate-900">Actions</TableHead>
+                            <TableHead className="text-base font-bold text-slate-900">Mức Độ</TableHead>
+                            <TableHead className="text-base font-bold text-slate-900">Điều Khoản / Yêu Cầu</TableHead>
+                            <TableHead className="text-base font-bold text-slate-900">Mô Tả</TableHead>
+                            <TableHead className="text-base font-bold text-slate-900">Trạng Thái</TableHead>
+                            <TableHead className="text-right text-base font-bold text-slate-900">Hành Động</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -161,7 +161,7 @@ export default function AuditFindingsManager({ initialFindings, userRole }: Prop
                                 <TableCell className="text-base">
                                     <div className="font-semibold text-base">{f.clause_reference}</div>
                                     <div className="text-sm text-slate-600 w-64 truncate">
-                                        {f.checklist_item?.section || f.checklist_item?.requirement || 'Manual Entry'}
+                                        {f.checklist_item?.section || f.checklist_item?.requirement || 'Nhập Thủ Công'}
                                     </div>
                                 </TableCell>
                                 <TableCell className="max-w-md text-base">
@@ -214,17 +214,17 @@ export default function AuditFindingsManager({ initialFindings, userRole }: Prop
             <Dialog open={!!editingFinding} onOpenChange={() => setEditingFinding(null)}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit Finding</DialogTitle>
+                        <DialogTitle>Chỉnh Sửa Phát Hiện</DialogTitle>
                     </DialogHeader>
                     {editingFinding && (
                         <form onSubmit={handleSaveEdit} className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Clause Reference</Label>
+                                    <Label>Tham Chiếu Điều Khoản</Label>
                                     <Input name="clause" defaultValue={editingFinding.clause_reference} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Grade</Label>
+                                    <Label>Mức Độ</Label>
                                     <Select name="grade" defaultValue={editingFinding.grade}>
                                         <SelectTrigger>
                                             <SelectValue />
@@ -238,12 +238,12 @@ export default function AuditFindingsManager({ initialFindings, userRole }: Prop
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Description</Label>
+                                <Label>Mô Tả</Label>
                                 <Textarea name="description" defaultValue={editingFinding.description} rows={5} />
                             </div>
                             <DialogFooter>
-                                <Button type="button" variant="outline" onClick={() => setEditingFinding(null)}>Cancel</Button>
-                                <Button type="submit" disabled={isSubmitting}>Save Changes</Button>
+                                <Button type="button" variant="outline" onClick={() => setEditingFinding(null)}>Hủy</Button>
+                                <Button type="submit" disabled={isSubmitting}>Lưu Thay Đổi</Button>
                             </DialogFooter>
                         </form>
                     )}

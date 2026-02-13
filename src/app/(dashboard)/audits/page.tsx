@@ -24,16 +24,34 @@ export default async function AuditsPage() {
 
     // Fetch audits based on Role
     const { data: { user } } = await supabase.auth.getUser()
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user?.id).single()
-    const isClient = profile?.role === 'client'
+    const { data: profile } = await supabase.from('profiles').select('active_role, role').eq('id', user?.id).single()
+    const activeRole = profile?.active_role || profile?.role || 'client'
+    const isClient = activeRole === 'client'
+    const isAdmin = activeRole === 'admin'
+    const isAuditorOrLead = activeRole === 'auditor' || activeRole === 'lead_auditor'
 
-    let query = supabase
-        .from('audits')
-        .select('*, client:profiles!client_id(company_name)')
-        .order('audit_date', { ascending: false })
+    if (!user) return null; // Should be handled by layout but safe check
+
+    let query;
 
     if (isClient) {
-        query = query.eq('client_id', user?.id)
+        query = supabase
+            .from('audits')
+            .select('*, client:profiles!client_id(company_name)')
+            .eq('client_id', user.id)
+            .order('audit_date', { ascending: false })
+    } else if (isAuditorOrLead) {
+        query = supabase
+            .from('audits')
+            .select('*, client:profiles!client_id(company_name), audit_members!inner(user_id)')
+            .eq('audit_members.user_id', user.id)
+            .order('audit_date', { ascending: false })
+    } else {
+        // Admin sees all
+        query = supabase
+            .from('audits')
+            .select('*, client:profiles!client_id(company_name)')
+            .order('audit_date', { ascending: false })
     }
 
     const { data: audits, error } = await query
@@ -41,13 +59,13 @@ export default async function AuditsPage() {
     return (
         <>
             <div className="flex items-center justify-between">
-                <h1 className="text-lg font-semibold md:text-2xl">Audits</h1>
-                {!isClient && (
+                <h1 className="text-lg font-semibold md:text-2xl">Đánh Giá</h1>
+                {isAdmin && (
                     <Link href="/audits/new">
                         <Button size="sm" className="h-8 gap-1">
                             <Plus className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                New Audit
+                                Đánh Giá Mới
                             </span>
                         </Button>
                     </Link>
@@ -55,22 +73,22 @@ export default async function AuditsPage() {
             </div>
             <Card>
                 <CardHeader>
-                    <CardTitle>Recent Audits</CardTitle>
+                    <CardTitle>Đánh Giá Gần Đây</CardTitle>
                     <CardDescription>
-                        Manage and track your ISO 17065 assessments.
+                        Quản lý và theo dõi các đánh giá ISO 17065 của bạn.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Project Code</TableHead>
-                                <TableHead>Client</TableHead>
-                                <TableHead className="hidden sm:table-cell">Standard</TableHead>
-                                <TableHead className="hidden md:table-cell">Date</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>Mã Dự Án</TableHead>
+                                <TableHead>Khách Hàng</TableHead>
+                                <TableHead className="hidden sm:table-cell">Tiêu Chuẩn</TableHead>
+                                <TableHead className="hidden md:table-cell">Ngày</TableHead>
+                                <TableHead>Trạng Thái</TableHead>
                                 <TableHead>
-                                    <span className="sr-only">Actions</span>
+                                    <span className="sr-only">Hành Động</span>
                                 </TableHead>
                             </TableRow>
                         </TableHeader>
@@ -95,7 +113,7 @@ export default async function AuditsPage() {
                                     </TableCell>
                                     <TableCell>
                                         <Link href={`/audits/${audit.id}/checklist`}>
-                                            <Button size="sm" variant="ghost">View</Button>
+                                            <Button size="sm" variant="ghost">Xem</Button>
                                         </Link>
                                     </TableCell>
                                 </TableRow>
@@ -103,7 +121,7 @@ export default async function AuditsPage() {
                             {!audits?.length && (
                                 <TableRow>
                                     <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                                        No audits found. Create one to get started.
+                                        Không tìm thấy đánh giá nào. Tạo mới để bắt đầu.
                                     </TableCell>
                                 </TableRow>
                             )}

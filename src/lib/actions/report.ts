@@ -10,22 +10,27 @@ export async function getAuditReportData(auditId: string) {
         .from('audits')
         .select(`
             *,
-            client:client_organizations(*)
+            client:profiles!client_id(*)
         `)
         .eq('id', auditId)
         .single()
 
     if (auditError) throw new Error(`Audit fetch error: ${auditError.message}`)
 
+    // 2. Fetch Team (from audit_members, fallback to audit_teams if linked by application_id, but audits doesn't have application_id)
+    // We will assume audit_members is the correct table for audit execution team
     const { data: team, error: teamError } = await supabase
         .from('audit_members')
         .select(`
             *,
-            profile:profiles(full_name)
+            profile:profiles(full_name, role)
         `)
         .eq('audit_id', auditId)
 
-    if (teamError) throw new Error(`Team fetch error: ${teamError.message}`)
+    if (teamError) {
+        // Just log, don't throw blocking error for team
+        console.error(`Team fetch error: ${teamError.message}`)
+    }
 
     // 3. Fetch Findings
     const { data: findings, error: findingsError } = await supabase

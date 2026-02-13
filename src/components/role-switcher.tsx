@@ -19,10 +19,10 @@ const roleIcons = {
 }
 
 const roleLabels = {
-    client: 'Client',
-    auditor: 'Auditor',
-    lead_auditor: 'Lead Auditor',
-    admin: 'Admin'
+    client: 'Khách Hàng',
+    auditor: 'Chuyên Gia Đánh Giá',
+    lead_auditor: 'Trưởng Đoàn Đánh Giá',
+    admin: 'Quản Trị Viên'
 }
 
 const roleColors = {
@@ -48,10 +48,10 @@ export function RoleSwitcher({
         const result = await switchUserRole(newRole)
 
         if (result.success) {
-            toast.success(`Switched to ${roleLabels[newRole]}`)
+            toast.success(`Đã chuyển sang vai trò ${roleLabels[newRole]}`)
             // Page will auto-refresh due to revalidatePath
         } else {
-            toast.error(result.error || 'Failed to switch role')
+            toast.error(result.error || 'Lỗi khi chuyển đổi vai trò')
             setSwitching(false)
         }
     }
@@ -65,7 +65,7 @@ export function RoleSwitcher({
         <>
             <DropdownMenuSeparator />
             <DropdownMenuLabel className="text-xs text-muted-foreground">
-                Switch Role
+                Chuyển Đổi Vai Trò
             </DropdownMenuLabel>
             {availableRoles.map(role => {
                 const Icon = roleIcons[role]

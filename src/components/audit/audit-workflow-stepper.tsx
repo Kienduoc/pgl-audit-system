@@ -11,11 +11,11 @@ interface AuditWorkflowStepperProps {
 }
 
 const steps: { id: AuditPhase; label: string }[] = [
-    { id: 'application', label: 'Application Review' },
-    { id: 'planning', label: 'Audit Plan' },
-    { id: 'evaluation', label: 'Evaluation' },
-    { id: 'reporting', label: 'Reporting' },
-    { id: 'certification', label: 'Certification' },
+    { id: 'application', label: 'Xem Xét Đơn' },
+    { id: 'planning', label: 'Lập Kế Hoạch' },
+    { id: 'evaluation', label: 'Đánh Giá' },
+    { id: 'reporting', label: 'Báo Cáo' },
+    { id: 'certification', label: 'Chứng Nhận' },
 ]
 
 export function AuditWorkflowStepper({ currentPhase, className }: AuditWorkflowStepperProps) {

@@ -1,24 +1,24 @@
 import { z } from "zod";
 
 export const companyInfoSchema = z.object({
-    nameVn: z.string().min(1, "Vietnamese name is required"),
+    nameVn: z.string().min(1, "Tên tiếng Việt là bắt buộc"),
     nameEn: z.string().optional(),
-    foundingYear: z.string().optional(),
-    taxId: z.string().min(1, "Tax ID is required"),
-    address: z.string().min(1, "Headquarters address is required"),
+    foundingYear: z.coerce.string().optional(),
+    taxId: z.string().min(1, "Mã số thuế là bắt buộc"),
+    address: z.string().min(1, "Địa chỉ trụ sở là bắt buộc"),
     factoryAddress: z.string().optional(), // Added for profile sync
 
     // Representative
-    repName: z.string().min(1, "Representative name is required"),
-    repPosition: z.string().min(1, "Position is required"),
-    repPhone: z.string().min(1, "Phone number is required"),
-    repEmail: z.string().email("Invalid email address"),
+    repName: z.string().min(1, "Tên người đại diện là bắt buộc"),
+    repPosition: z.string().min(1, "Chức vụ là bắt buộc"),
+    repPhone: z.string().min(1, "Số điện thoại là bắt buộc"),
+    repEmail: z.string().email("Email không hợp lệ"),
 
     // Contact Person
-    contactName: z.string().min(1, "Contact person name is required"),
+    contactName: z.string().min(1, "Tên người liên hệ là bắt buộc"),
     contactPosition: z.string().optional(),
-    contactPhone: z.string().min(1, "Phone number is required"),
-    contactEmail: z.string().email("Invalid email address"),
+    contactPhone: z.string().min(1, "Số điện thoại là bắt buộc"),
+    contactEmail: z.string().email("Email không hợp lệ"),
 
     // Organization Details
     orgType: z.array(z.string()).optional(), // State, Joint Venture, etc.
@@ -39,18 +39,18 @@ export const companyInfoSchema = z.object({
 
 export const productSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, "Product name is required"),
-    model: z.string().min(1, "Model/Type is required"),
-    standard: z.string().min(1, "Applied standard is required"),
-    factoryName: z.string().min(1, "Factory name is required"),
-    factoryAddress: z.string().min(1, "Factory location is required"),
+    name: z.string().min(1, "Tên sản phẩm là bắt buộc"),
+    model: z.string().min(1, "Kiểu loại là bắt buộc"),
+    standard: z.string().min(1, "Tiêu chuẩn áp dụng là bắt buộc"),
+    factoryName: z.string().min(1, "Tên nhà máy là bắt buộc"),
+    factoryAddress: z.string().min(1, "Địa chỉ nhà máy là bắt buộc"),
     certificationType: z.enum(["New", "Expansion", "Re-assessment"]).default("New"),
 });
 
 export const locationSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, "Location name is required"),
-    address: z.string().min(1, "Address is required"),
+    name: z.string().min(1, "Tên địa điểm là bắt buộc"),
+    address: z.string().min(1, "Địa chỉ là bắt buộc"),
     products: z.string().optional(),
     personnelCount: z.coerce.number().min(0).default(0),
 });
@@ -59,7 +59,7 @@ export const applicationSchema = z.object({
     companyInfo: companyInfoSchema,
 
     // Section 2: Certification Info
-    products: z.array(productSchema).min(1, "At least one product is required"),
+    products: z.array(productSchema).min(1, "Cần ít nhất một sản phẩm"),
 
     hasOutsourcedProcess: z.boolean().default(false),
     outsourcedProcessDetails: z.string().optional(),

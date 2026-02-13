@@ -22,6 +22,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { NotificationBell } from "@/components/layout/notification-bell"
 import { RoleSwitcher } from "@/components/role-switcher"
+// import { LanguageSwitcher } from "@/components/language-switcher" // TODO: Simple client-side version
 
 export default async function DashboardLayout({
     children,
@@ -61,34 +62,31 @@ export default async function DashboardLayout({
             <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                 <Link href="/" className="flex items-center gap-2 font-semibold">
                     <FileCheck className="h-6 w-6" />
-                    <span className="">PGL Audit System</span>
+                    <span className="">Hệ Thống Đánh Giá PGL</span>
                 </Link>
             </div>
             <div className="flex-1">
                 <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                    >
-                        <LayoutDashboard className="h-4 w-4" />
-                        Dashboard
-                    </Link>
-                    {activeRole !== 'client' && (
+                    {/* Dashboard - Only for Lead Auditor and Admin */}
+                    {(activeRole === 'lead_auditor' || activeRole === 'admin') && (
                         <Link
-                            href="/audits"
+                            href="/"
+                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                        >
+                            <LayoutDashboard className="h-4 w-4" />
+                            Tổng Quan
+                        </Link>
+                    )}
+                    {/* Audit Programs - Only for Admin & Client (Create) & Lead (Review) */}
+                    {(activeRole === 'client' || activeRole === 'lead_auditor' || activeRole === 'admin') && (
+                        <Link
+                            href="/audit-programs"
                             className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                         >
                             <FileCheck className="h-4 w-4" />
-                            Audits
+                            Chương Trình Đánh Giá
                         </Link>
                     )}
-                    <Link
-                        href="/audit-programs"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                    >
-                        <FileCheck className="h-4 w-4" />
-                        Audit Programs
-                    </Link>
                 </nav>
             </div>
         </div >
@@ -121,6 +119,8 @@ export default async function DashboardLayout({
                     </div>
                     {/* Notifications */}
                     <NotificationBell />
+                    {/* Language Switcher */}
+                    {/* <LanguageSwitcher /> */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="secondary" size="icon" className="rounded-full">
@@ -132,17 +132,17 @@ export default async function DashboardLayout({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuLabel>Tài Khoản</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
-                                <Link href="/profile/settings">Organization Settings</Link>
+                                <Link href="/profile/settings">Cài Đặt Tổ Chức</Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>Support</DropdownMenuItem>
+                            <DropdownMenuItem>Hỗ Trợ</DropdownMenuItem>
                             <RoleSwitcher currentRole={activeRole} availableRoles={availableRoles} />
                             <DropdownMenuSeparator />
                             <form action={handleSignOut}>
                                 <button type="submit" className="w-full text-left">
-                                    <DropdownMenuItem>Logout</DropdownMenuItem>
+                                    <DropdownMenuItem>Đăng Xuất</DropdownMenuItem>
                                 </button>
                             </form>
                         </DropdownMenuContent>

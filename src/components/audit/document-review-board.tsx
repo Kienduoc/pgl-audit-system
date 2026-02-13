@@ -65,11 +65,11 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
         try {
             const result = await completeDocumentReview(auditId)
             if (result.success) {
-                toast.success('Document Review Completed')
+                toast.success('Đã hoàn thành xem xét hồ sơ')
                 router.refresh()
                 router.push(`/audits/${auditId}`)
             } else {
-                toast.error('Error completing review', { description: result.error })
+                toast.error('Lỗi khi hoàn thành xem xét', { description: result.error })
             }
         } catch (err: any) {
             toast.error('Error', { description: err.message })
@@ -83,18 +83,18 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
             {/* Header Actions */}
             <div className="flex justify-between items-center bg-white p-4 rounded-lg border shadow-sm">
                 <div>
-                    <h2 className="text-lg font-semibold">Document Review Progress</h2>
+                    <h2 className="text-lg font-semibold">Tiến Độ Xem Xét Hồ Sơ</h2>
                     <p className="text-sm text-gray-500">
-                        Reviewed: {reviews.length} / {DOSSIER_CHECKLIST.reduce((acc, cat) => acc + cat.items.length, 0)} items
+                        Đã xem xét: {reviews.length} / {DOSSIER_CHECKLIST.reduce((acc, cat) => acc + cat.items.length, 0)} mục
                     </p>
                 </div>
                 <Button onClick={() => window.open(`/audits/${auditId}/report/document-review`, '_blank')}>
                     <FileText className="mr-2 h-4 w-4" />
-                    Generate BM06 Report
+                    Tạo Báo Cáo BM06
                 </Button>
                 <Button variant="default" onClick={handleComplete} className="bg-green-600 hover:bg-green-700">
                     <CheckCircle className="mr-2 h-4 w-4" />
-                    Complete Review
+                    Hoàn Thành Xem Xét
                 </Button>
             </div>
 
@@ -151,7 +151,7 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
                                     <div className="md:col-span-8 bg-slate-50 p-4 rounded-lg border border-slate-100">
                                         <div className="flex flex-col gap-4">
                                             <div className="flex items-center justify-between">
-                                                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Auditor Assessment</label>
+                                                <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Đánh Giá Của Chuyên Gia</label>
                                                 {/* Status Indicator */}
                                                 {currentStatus === 'ok' && <CheckCircle className="h-5 w-5 text-green-500" />}
                                                 {currentStatus === 'minor' && <AlertTriangle className="h-5 w-5 text-yellow-500" />}
@@ -164,20 +164,20 @@ export default function AuditDocumentReviewBoard({ auditId, dossier = [], review
                                                     onValueChange={(val) => handleSave(item.id, category.category, val, currentNotes)}
                                                 >
                                                     <SelectTrigger className="bg-white">
-                                                        <SelectValue placeholder="Select Status" />
+                                                        <SelectValue placeholder="Chọn Trạng Thái" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="pending">Pending Review</SelectItem>
-                                                        <SelectItem value="ok">Conformant (OK)</SelectItem>
-                                                        <SelectItem value="minor">Minor Non-conformity</SelectItem>
-                                                        <SelectItem value="major">Major Non-conformity</SelectItem>
-                                                        <SelectItem value="critical">Critical Issue</SelectItem>
+                                                        <SelectItem value="pending">Chờ Xem Xét</SelectItem>
+                                                        <SelectItem value="ok">Phù Hợp (OK)</SelectItem>
+                                                        <SelectItem value="minor">Lỗi Nhẹ (Minor NC)</SelectItem>
+                                                        <SelectItem value="major">Lỗi Nặng (Major NC)</SelectItem>
+                                                        <SelectItem value="critical">Lỗi Nghiêm Trọng</SelectItem>
                                                     </SelectContent>
                                                 </Select>
 
                                                 <div className="relative">
                                                     <Textarea
-                                                        placeholder="Auditor comments / findings..."
+                                                        placeholder="Nhận xét / phát hiện của chuyên gia..."
                                                         className="min-h-[80px] bg-white text-sm"
                                                         defaultValue={currentNotes}
                                                         onBlur={(e) => {

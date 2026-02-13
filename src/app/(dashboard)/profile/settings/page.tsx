@@ -38,6 +38,22 @@ export default function ProfileSettingsPage() {
 
             if (user) {
                 setUserId(user.id)
+                // Role Check
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('active_role, role')
+                    .eq('id', user.id)
+                    .single()
+
+                const activeRole = profile?.active_role || profile?.role || 'client'
+
+                // Redirect if not Client or Admin
+                if (activeRole === 'auditor' || activeRole === 'lead_auditor') {
+                    // Since this is client-side, we can use window or just redirect via next/navigation
+                    // Ideally this should be a layout or server component check, but for now:
+                    window.location.href = '/profile'
+                    return
+                }
 
                 // Try to fetch existing Organization Info
                 const { data: org } = await supabase
@@ -128,9 +144,9 @@ export default function ProfileSettingsPage() {
             }
 
             if (error) throw error
-            toast.success("Organization information saved successfully!")
+            toast.success("Đã lưu thông tin tổ chức thành công!")
         } catch (error: any) {
-            toast.error("Failed to save settings: " + error.message)
+            toast.error("Lưu cài đặt thất bại: " + error.message)
         } finally {
             setSaving(false)
         }
@@ -141,15 +157,15 @@ export default function ProfileSettingsPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             <div>
-                <h1 className="text-2xl font-bold">Organization Settings</h1>
-                <p className="text-muted-foreground">Manage your company details. This information will be auto-filled in your Audit Requests.</p>
+                <h1 className="text-2xl font-bold">Cài Đặt Tổ Chức</h1>
+                <p className="text-muted-foreground">Quản lý thông tin công ty. Thông tin này sẽ tự động điền vào Yêu Cầu Đánh Giá.</p>
             </div>
 
             <Card>
                 <form onSubmit={handleSubmit}>
                     <CardHeader>
-                        <CardTitle>Company Profile</CardTitle>
-                        <CardDescription>Official information for certification documents.</CardDescription>
+                        <CardTitle>Hồ Sơ Công Ty</CardTitle>
+                        <CardDescription>Thông tin chính thức cho tài liệu chứng nhận.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
 
@@ -163,22 +179,22 @@ export default function ProfileSettingsPage() {
 
                         {/* Basic Identity */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-sm uppercase text-muted-foreground">Identity</h3>
+                            <h3 className="font-semibold text-sm uppercase text-muted-foreground">Thông Tin Chung</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Vietnamese Name <span className="text-red-500">*</span></Label>
+                                    <Label>Tên Tiếng Việt <span className="text-red-500">*</span></Label>
                                     <Input name="vietnamese_name" value={formData.vietnamese_name} onChange={handleChange} required placeholder="Công ty TNHH..." />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>English Name</Label>
+                                    <Label>Tên Tiếng Anh</Label>
                                     <Input name="english_name" value={formData.english_name} onChange={handleChange} placeholder="... Co., Ltd" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Tax Code (MST) <span className="text-red-500">*</span></Label>
+                                    <Label>Mã Số Thuế <span className="text-red-500">*</span></Label>
                                     <Input name="tax_code" value={formData.tax_code} onChange={handleChange} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Year Established</Label>
+                                    <Label>Năm Thành Lập</Label>
                                     <Input name="year_established" type="number" value={formData.year_established} onChange={handleChange} />
                                 </div>
                             </div>
@@ -188,14 +204,14 @@ export default function ProfileSettingsPage() {
 
                         {/* Location */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-sm uppercase text-muted-foreground">Location</h3>
+                            <h3 className="font-semibold text-sm uppercase text-muted-foreground">Địa Điểm</h3>
                             <div className="grid grid-cols-1 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Office Address <span className="text-red-500">*</span></Label>
+                                    <Label>Địa Chỉ Văn Phòng <span className="text-red-500">*</span></Label>
                                     <Input name="office_address" value={formData.office_address} onChange={handleChange} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Factory Address <span className="text-red-500">*</span></Label>
+                                    <Label>Địa Chỉ Nhà Máy <span className="text-red-500">*</span></Label>
                                     <Input name="factory_address" value={formData.factory_address} onChange={handleChange} required />
                                 </div>
                             </div>
@@ -205,27 +221,27 @@ export default function ProfileSettingsPage() {
 
                         {/* Contact & Operations */}
                         <div className="space-y-4">
-                            <h3 className="font-semibold text-sm uppercase text-muted-foreground">People & Operations</h3>
+                            <h3 className="font-semibold text-sm uppercase text-muted-foreground">Nhân Sự & Vận Hành</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Legal Representative</Label>
+                                    <Label>Người Đại Diện Pháp Luật</Label>
                                     <Input name="representative_name" value={formData.representative_name} onChange={handleChange} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Contact Person (Audit Liaison)</Label>
-                                    <Input name="contact_person_name" value={formData.contact_person_name} onChange={handleChange} placeholder="Full name of contact" />
+                                    <Label>Người Liên Hệ (Phụ Trách Audit)</Label>
+                                    <Input name="contact_person_name" value={formData.contact_person_name} onChange={handleChange} placeholder="Họ tên người liên hệ" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Contact Phone</Label>
+                                    <Label>Số Điện Thoại Liên Hệ</Label>
                                     <Input name="contact_phone" value={formData.contact_phone} onChange={handleChange} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Total Staff</Label>
+                                    <Label>Tổng Số Nhân Viên</Label>
                                     <Input name="staff_total" type="number" value={formData.staff_total} onChange={handleChange} />
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
-                                    <Label>Main Market</Label>
-                                    <Input name="main_market" value={formData.main_market} onChange={handleChange} placeholder="e.g. Domestic, EU, USA..." />
+                                    <Label>Thị Trường Chính</Label>
+                                    <Input name="main_market" value={formData.main_market} onChange={handleChange} placeholder="VD: Nội địa, EU, USA..." />
                                 </div>
                             </div>
                         </div>
@@ -234,7 +250,7 @@ export default function ProfileSettingsPage() {
                     <CardFooter className="flex justify-end bg-muted/20 border-t p-6">
                         <Button type="submit" disabled={saving}>
                             {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                            <Save className="mr-2 h-4 w-4" /> Save Changes
+                            <Save className="mr-2 h-4 w-4" /> Lưu Thay Đổi
                         </Button>
                     </CardFooter>
                 </form>

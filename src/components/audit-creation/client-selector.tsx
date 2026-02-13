@@ -62,11 +62,11 @@ export function ClientSelector({ onSelect, onNewClient }: ClientSelectorProps) {
             <div className="border rounded-lg bg-background shadow-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 <div className="flex justify-between items-center px-6 py-4 border-b bg-muted/30">
                     <div>
-                        <h3 className="font-semibold text-base">Register New Client Organization</h3>
-                        <p className="text-xs text-muted-foreground">Enter basic details to create a quick profile.</p>
+                        <h3 className="font-semibold text-base">Đăng Ký Khách Hàng Mới</h3>
+                        <p className="text-xs text-muted-foreground">Nhập thông tin cơ bản để tạo nhanh hồ sơ.</p>
                     </div>
                     <Button variant="ghost" size="sm" onClick={() => setIsCreatingNew(false)} className="h-8 w-8 p-0 rounded-full">
-                        <span className="sr-only">Close</span>
+                        <span className="sr-only">Đóng</span>
                         <Plus className="h-4 w-4 rotate-45" />
                     </Button>
                 </div>
@@ -74,13 +74,13 @@ export function ClientSelector({ onSelect, onNewClient }: ClientSelectorProps) {
                 <div className="p-6 grid gap-5">
                     <div className="grid gap-2">
                         <Label htmlFor="english_name" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Company Name (English) <span className="text-red-500">*</span>
+                            Tên Công Ty (Tiếng Anh) <span className="text-red-500">*</span>
                         </Label>
                         <Input
                             id="english_name"
                             value={newClientData.english_name}
                             onChange={e => setNewClientData({ ...newClientData, english_name: e.target.value })}
-                            placeholder="e.g. Acme Manufacturing Co., Ltd."
+                            placeholder="Ví dụ: Cong ty TNHH ABC..."
                             className="h-10"
                         />
                     </div>
@@ -88,33 +88,33 @@ export function ClientSelector({ onSelect, onNewClient }: ClientSelectorProps) {
                     <div className="grid grid-cols-2 gap-5">
                         <div className="grid gap-2">
                             <Label htmlFor="tax_code" className="text-sm font-medium leading-none">
-                                Tax Code <span className="text-red-500">*</span>
+                                Mã Số Thuế <span className="text-red-500">*</span>
                             </Label>
                             <Input
                                 id="tax_code"
                                 value={newClientData.tax_code}
                                 onChange={e => setNewClientData({ ...newClientData, tax_code: e.target.value })}
-                                placeholder="e.g. 0101234567"
+                                placeholder="Ví dụ: 0101234567"
                                 className="h-10"
                             />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="office_address" className="text-sm font-medium leading-none">
-                                Office Address
+                                Địa Chỉ Văn Phòng
                             </Label>
                             <Input
                                 id="office_address"
                                 value={newClientData.office_address}
                                 onChange={e => setNewClientData({ ...newClientData, office_address: e.target.value })}
-                                placeholder="e.g. Hanoi, Vietnam"
+                                placeholder="Ví dụ: Hà Nội, Việt Nam"
                                 className="h-10"
                             />
                         </div>
                     </div>
 
                     <div className="flex justify-end gap-3 mt-2 pt-4 border-t">
-                        <Button variant="outline" onClick={() => setIsCreatingNew(false)}>Cancel</Button>
-                        <Button onClick={handleCreateNew}>Confirm & Continue</Button>
+                        <Button variant="outline" onClick={() => setIsCreatingNew(false)}>Hủy</Button>
+                        <Button onClick={handleCreateNew}>Xác Nhận & Tiếp Tục</Button>
                     </div>
                 </div>
             </div>
@@ -124,7 +124,7 @@ export function ClientSelector({ onSelect, onNewClient }: ClientSelectorProps) {
 
     return (
         <div className="space-y-2">
-            <Label>Select Client</Label>
+            <Label>Chọn Khách Hàng</Label>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <Button
@@ -135,18 +135,18 @@ export function ClientSelector({ onSelect, onNewClient }: ClientSelectorProps) {
                     >
                         {value
                             ? clients.find((c) => c.id === value)?.english_name
-                            : "Select a client..."}
+                            : "Chọn một khách hàng..."}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-[500px] p-0" align="start">
                     <Command>
-                        <CommandInput placeholder="Search client by name or tax code..." onValueChange={handleSearch} className="h-12" />
+                        <CommandInput placeholder="Tìm khách hàng theo tên hoặc MST..." onValueChange={handleSearch} className="h-12" />
                         <CommandList className="max-h-[350px]">
                             <CommandEmpty className="py-6 text-center text-sm text-muted-foreground">
-                                No client found.
+                                Không tìm thấy khách hàng.
                             </CommandEmpty>
-                            <CommandGroup heading="Existing Clients">
+                            <CommandGroup heading="Khách Hàng Hiện Có">
                                 {clients.map((client) => (
                                     <CommandItem
                                         key={client.id}
@@ -185,7 +185,7 @@ export function ClientSelector({ onSelect, onNewClient }: ClientSelectorProps) {
                                     setIsCreatingNew(true)
                                 }}
                             >
-                                <Plus className="h-4 w-4 mr-2" /> Register New Client Organization
+                                <Plus className="h-4 w-4 mr-2" /> Đăng Ký Khách Hàng Mới
                             </Button>
                         </div>
                     </Command>

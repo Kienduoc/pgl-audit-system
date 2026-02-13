@@ -1,0 +1,6 @@
+Seed Report Data
+Using Audit ID: ea63d635-079b-442c-9fc5-aff3fbc210f2
+Using User ID: bb1682ed-b601-4ac6-9e02-6472ddd2345d
+Team Insert ERR: new row violates row-level security policy for table "audit_members"
+Findings Insert OK
+REPORT URL: http://localhost:3000/audits/ea63d635-079b-442c-9fc5-aff3fbc210f2/report

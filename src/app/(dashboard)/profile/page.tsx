@@ -26,7 +26,14 @@ export default async function ProfilePage() {
         .eq('id', user.id)
         .single()
 
-    const isClient = profile?.role === 'client'
+    const activeRole = profile?.active_role || profile?.role || 'client'
+    const isClient = activeRole === 'client'
+    const isAuditorOrLead = activeRole === 'auditor' || activeRole === 'lead_auditor'
+
+    // Admin should manage settings instead of profile tabs
+    if (activeRole === 'admin') {
+        redirect('/profile/settings')
+    }
 
     // Fetch Organization Data for Clients
     let orgData = null
@@ -107,30 +114,27 @@ export default async function ProfilePage() {
             </div>
 
             <Tabs defaultValue="competence" className="w-full">
-                <TabsList className="grid w-full grid-cols-4 lg:w-[600px]">
-                    <TabsTrigger value="competence">Competence</TabsTrigger>
-                    <TabsTrigger value="experience">Work History</TabsTrigger>
-                    <TabsTrigger value="audits">Audit Log</TabsTrigger>
-                    <TabsTrigger value="settings">Settings</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 lg:w-[400px]">
+                    <TabsTrigger value="competence">Năng Lực & Kinh Nghiệm</TabsTrigger>
+                    <TabsTrigger value="audits">Nhật Ký Đánh Giá</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="competence" className="space-y-4 mt-4">
-                    <h2 className="text-xl font-semibold tracking-tight">Competence & Qualifications</h2>
+                    <h2 className="text-xl font-semibold tracking-tight">Năng Lực & Chứng Chỉ</h2>
                     <EducationList initialData={educations || []} />
                     <div className="my-8 border-t" />
                     <CertificateList initialData={certificates || []} />
-                </TabsContent>
 
-                <TabsContent value="experience" className="mt-4">
-                    <h2 className="text-xl font-semibold tracking-tight mb-4">Professional Experience</h2>
+                    <div className="my-8 border-t" />
+                    <h2 className="text-xl font-semibold tracking-tight mb-4">Kinh Nghiệm Làm Việc</h2>
                     <ExperienceList initialData={experiences || []} />
                 </TabsContent>
 
                 <TabsContent value="audits" className="mt-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Audit Participation Log</CardTitle>
-                            <CardDescription>History of ISO 17065 assessments conducted.</CardDescription>
+                            <CardTitle>Nhật Ký Đánh Giá</CardTitle>
+                            <CardDescription>Lịch sử các đánh giá ISO 17065 đã thực hiện.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -139,10 +143,10 @@ export default async function ProfilePage() {
                                         <div>
                                             <div className="font-semibold">{audit.project_code}</div>
                                             <div className="text-sm text-muted-foreground">
-                                                Client: {audit.client?.company_name || 'Unknown'}
+                                                Khách Hàng: {audit.client?.company_name || 'Không xác định'}
                                             </div>
                                             <div className="text-sm text-muted-foreground">
-                                                Standard: {audit.standard}
+                                                Tiêu Chuẩn: {audit.standard}
                                             </div>
                                         </div>
                                         <div className="text-right">
@@ -150,25 +154,21 @@ export default async function ProfilePage() {
                                                 {audit.status}
                                             </Badge>
                                             <div className="text-xs text-muted-foreground mt-1">
-                                                {audit.audit_date ? format(new Date(audit.audit_date), 'dd/MM/yyyy') : 'Date N/A'}
+                                                {audit.audit_date ? format(new Date(audit.audit_date), 'dd/MM/yyyy') : 'Ngày N/A'}
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                                 {!myAudits?.length && (
-                                    <div className="text-center py-8 text-muted-foreground">No audit history found.</div>
+                                    <div className="text-center py-8 text-muted-foreground">Không tìm thấy lịch sử đánh giá.</div>
                                 )}
                             </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
 
-                <TabsContent value="settings" className="mt-4">
-                    <div className="p-4 border rounded-lg text-muted-foreground border-dashed text-center">
-                        User settings form temporarily moved.
-                    </div>
-                </TabsContent>
+                {/* Removed Settings Tab for Auditors */}
             </Tabs>
-        </div>
+        </div >
     )
 }

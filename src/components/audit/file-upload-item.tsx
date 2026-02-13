@@ -43,7 +43,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
             for (let i = 0; i < files.length; i++) {
                 const file = files[i]
                 if (file.size > 10 * 1024 * 1024) {
-                    toast.error(`File ${file.name} is too large (>10MB)`)
+                    toast.error(`Tệp ${file.name} quá lớn (>10MB)`)
                     continue
                 }
 
@@ -57,7 +57,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
 
                 if (uploadError) {
                     console.error("Upload error", uploadError)
-                    toast.error(`Failed to upload ${file.name}`)
+                    toast.error(`Lỗi tải lên ${file.name}`)
                     continue
                 }
 
@@ -74,12 +74,12 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
 
             if (newAttachments.length > 0) {
                 onChange([...value, ...newAttachments])
-                toast.success(`Uploaded ${newAttachments.length} file(s)`)
+                toast.success(`Đã tải lên ${newAttachments.length} tệp`)
             }
 
         } catch (error) {
             console.error("Upload error:", error)
-            toast.error("Failed to upload files")
+            toast.error("Lỗi tải tệp")
         } finally {
             setIsUploading(false)
             // Reset input
@@ -108,11 +108,11 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
 
         onChange([...value, newAttachment])
         setLinkUrl("")
-        toast.success("Link added")
+        toast.success("Đã thêm liên kết")
     }
 
     const handleRemove = (index: number) => {
-        if (confirm("Remove this attachment?")) {
+        if (confirm("Xóa tài liệu này?")) {
             const newValue = [...value]
             newValue.splice(index, 1)
             onChange(newValue)
@@ -131,7 +131,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
             .createSignedUrl(attachment.fileUrl, 3600)
 
         if (error || !data?.signedUrl) {
-            toast.error("Could not generate download link")
+            toast.error("Không thể tạo liên kết tải xuống")
             return
         }
 
@@ -142,7 +142,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
         <div className="p-4 border rounded-lg bg-card space-y-4">
             <div className="flex items-center justify-between">
                 <span className="font-medium text-sm">{label}</span>
-                <span className="text-xs text-muted-foreground">{value.length} items</span>
+                <span className="text-xs text-muted-foreground">{value.length} mục</span>
             </div>
 
             {/* List of Attachments */}
@@ -179,7 +179,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
                         <LinkIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <input
                             className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-9"
-                            placeholder="Paste Google Drive / Dropbox link here..."
+                            placeholder="Dán liên kết Google Drive / Dropbox..."
                             value={linkUrl}
                             onChange={(e) => setLinkUrl(e.target.value)}
                             onKeyDown={(e) => {
@@ -191,7 +191,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
                         />
                     </div>
                     <Button type="button" size="sm" onClick={handleAddLink} disabled={!linkUrl}>
-                        Add Link
+                        Thêm Link
                     </Button>
                 </div>
 
@@ -200,7 +200,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
                         <span className="w-full border-t" />
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-card px-2 text-muted-foreground">Or</span>
+                        <span className="bg-card px-2 text-muted-foreground">Hoặc</span>
                     </div>
                 </div>
 
@@ -217,7 +217,7 @@ export function FileUploadItem({ label, value = [], onChange, disabled }: FileUp
                         />
                         <Button type="button" variant="outline" size="sm" disabled={disabled || isUploading} className="w-full min-w-[200px]">
                             {isUploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
-                            Upload Files (Max 10MB)
+                            Tải Tệp Lên (Tối đa 10MB)
                         </Button>
                     </div>
                 </div>

@@ -58,7 +58,7 @@ export function AuditDocuments({ auditId, documents, auditors, currentUserRole }
             .upload(filePath, file)
 
         if (uploadError) {
-            toast.error('Upload failed: ' + uploadError.message)
+            toast.error('Tải lên thất bại: ' + uploadError.message)
             setUploading(false)
             return
         }
@@ -69,7 +69,7 @@ export function AuditDocuments({ auditId, documents, auditors, currentUserRole }
         if (result.error) {
             toast.error(result.error)
         } else {
-            toast.success('Document uploaded')
+            toast.success('Đã tải lên tài liệu')
             setFile(null)
         }
         setUploading(false)
@@ -78,58 +78,58 @@ export function AuditDocuments({ auditId, documents, auditors, currentUserRole }
     const handleAssign = async (docId: string, auditorId: string) => {
         const result = await assignAuditorToDocument(auditId, docId, auditorId)
         if (result.error) toast.error(result.error)
-        else toast.success('Auditor assigned access')
+        else toast.success('Đã phân công quyền truy cập')
     }
 
     const handleDelete = async (docId: string) => {
-        if (!confirm('Are you sure?')) return
+        if (!confirm('Bạn có chắc chắn không?')) return
         const result = await deleteAuditDocument(auditId, docId)
         if (result.error) toast.error(result.error)
-        else toast.success('Document deleted')
+        else toast.success('Đã xóa tài liệu')
     }
 
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div>
-                    <CardTitle>Audit Documents</CardTitle>
+                    <CardTitle>Tài Liệu Đánh Giá</CardTitle>
                     <CardDescription>
-                        {isClient ? "Upload your application documents here." : "Manage and review audit evidence."}
+                        {isClient ? "Tải lên tài liệu hồ sơ của bạn tại đây." : "Quản lý và xem xét bằng chứng đánh giá."}
                     </CardDescription>
                 </div>
                 {/* Upload Dialog (Available to Client & Lead) */}
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button>
-                            <Upload className="mr-2 h-4 w-4" /> Upload Document
+                            <Upload className="mr-2 h-4 w-4" /> Tải Lên Tài Liệu
                         </Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle>Upload Document</DialogTitle>
+                            <DialogTitle>Tải Lên Tài Liệu</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 py-4">
                             <div className="space-y-2">
-                                <Label>Document Type</Label>
+                                <Label>Loại Tài Liệu</Label>
                                 <Select value={docType} onValueChange={setDocType}>
                                     <SelectTrigger>
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="application">Application / Registration</SelectItem>
-                                        <SelectItem value="manual">Quality Manual</SelectItem>
-                                        <SelectItem value="procedure">Procedure</SelectItem>
-                                        <SelectItem value="record">Record / Evidence</SelectItem>
+                                        <SelectItem value="application">Đơn Đăng Ký / Hồ Sơ</SelectItem>
+                                        <SelectItem value="manual">Sổ Tay Chất Lượng</SelectItem>
+                                        <SelectItem value="procedure">Quy Trình</SelectItem>
+                                        <SelectItem value="record">Hồ Sơ / Bằng Chứng</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <Label>File</Label>
+                                <Label>Tệp Tin</Label>
                                 <Input type="file" onChange={e => setFile(e.target.files?.[0] || null)} />
                             </div>
                             <Button onClick={handleUpload} disabled={uploading || !file} className="w-full">
                                 {uploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Upload
+                                Tải Lên
                             </Button>
                         </div>
                     </DialogContent>
@@ -139,11 +139,11 @@ export function AuditDocuments({ auditId, documents, auditors, currentUserRole }
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Date</TableHead>
-                            {isLead && <TableHead>Access</TableHead>}
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead>Tên</TableHead>
+                            <TableHead>Loại</TableHead>
+                            <TableHead>Ngày</TableHead>
+                            {isLead && <TableHead>Truy Cập</TableHead>}
+                            <TableHead className="text-right">Hành Động</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -168,7 +168,7 @@ export function AuditDocuments({ auditId, documents, auditors, currentUserRole }
                                         </div>
                                         <Select onValueChange={(val) => handleAssign(doc.id, val)}>
                                             <SelectTrigger className="h-7 text-xs w-[130px]">
-                                                <SelectValue placeholder="+ Assign" />
+                                                <SelectValue placeholder="+ Phân Công" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {auditors.map(a => (
@@ -194,7 +194,7 @@ export function AuditDocuments({ auditId, documents, auditors, currentUserRole }
                         {documents.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={isLead ? 5 : 4} className="text-center text-muted-foreground py-8">
-                                    No documents uploaded yet.
+                                    Chưa có tài liệu nào được tải lên.
                                 </TableCell>
                             </TableRow>
                         )}

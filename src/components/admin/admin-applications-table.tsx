@@ -47,7 +47,7 @@ export function AdminApplicationsTable({ initialData }: AdminApplicationsTablePr
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 flex-1 max-w-sm">
                     <Input
-                        placeholder="Filter company or project code..."
+                        placeholder="Lọc theo công ty hoặc mã dự án..."
                         value={filter}
                         onChange={(e) => setFilter(e.target.value)}
                         className="h-9"
@@ -57,14 +57,14 @@ export function AdminApplicationsTable({ initialData }: AdminApplicationsTablePr
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                         <SelectTrigger className="w-[180px] h-9">
                             <Filter className="mr-2 h-4 w-4" />
-                            <SelectValue placeholder="Status" />
+                            <SelectValue placeholder="Trạng Thái" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Statuses</SelectItem>
-                            <SelectItem value="submitted">Submitted</SelectItem>
-                            <SelectItem value="approved">Approved</SelectItem>
-                            <SelectItem value="rejected">Rejected</SelectItem>
-                            <SelectItem value="info_needed">Info Needed</SelectItem>
+                            <SelectItem value="all">Tất Cả</SelectItem>
+                            <SelectItem value="submitted">Đã Nộp</SelectItem>
+                            <SelectItem value="approved">Đã Duyệt</SelectItem>
+                            <SelectItem value="rejected">Từ Chối</SelectItem>
+                            <SelectItem value="info_needed">Cần Thông Tin</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -74,19 +74,19 @@ export function AdminApplicationsTable({ initialData }: AdminApplicationsTablePr
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Project Code</TableHead>
-                            <TableHead>Company</TableHead>
-                            <TableHead>Product</TableHead>
-                            <TableHead>Created</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead className="text-right">Action</TableHead>
+                            <TableHead>Mã Dự Án</TableHead>
+                            <TableHead>Công Ty</TableHead>
+                            <TableHead>Sản Phẩm</TableHead>
+                            <TableHead>Ngày Tạo</TableHead>
+                            <TableHead>Trạng Thái</TableHead>
+                            <TableHead className="text-right">Hành Động</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {filteredData.length === 0 ? (
                             <TableRow>
                                 <TableCell colSpan={6} className="h-24 text-center">
-                                    No applications found.
+                                    Không tìm thấy hồ sơ nào.
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -121,7 +121,7 @@ export function AdminApplicationsTable({ initialData }: AdminApplicationsTablePr
                                     <TableCell className="text-right">
                                         <Link href={`/admin/applications/${app.id}`}>
                                             <Button variant="ghost" size="sm">
-                                                Review
+                                                Xem Xét
                                                 <ArrowRight className="ml-2 h-4 w-4" />
                                             </Button>
                                         </Link>
@@ -133,7 +133,7 @@ export function AdminApplicationsTable({ initialData }: AdminApplicationsTablePr
                 </Table>
             </div>
             <div className="text-xs text-muted-foreground">
-                Showing {filteredData.length} of {initialData?.length || 0} records
+                Hiển thị {filteredData.length} trong số {initialData?.length || 0} bản ghi
             </div>
         </div>
     )

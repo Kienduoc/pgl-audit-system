@@ -7,33 +7,89 @@ import { redirect } from 'next/navigation'
 export async function searchClients(query: string) {
     const supabase = await createClient()
 
-    // If empty query, return recent clients
-    if (!query) {
-        const { data, error } = await supabase
-            .from('client_organizations')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(5)
-        return { data, error }
+    console.log('[searchClients] Starting search, query:', query)
+
+    // Fetch all submitted applications (admin should be able to see all due to RLS policy)
+    const { data: applications, error: appError } = await supabase
+        .from('audit_applications')
+        .select('user_id, content, status, created_at')
+        .in('status', ['Submitted', 'submitted'])
+        .order('created_at', { ascending: false })
+        .limit(50)
+
+    console.log('[searchClients] Applications query result:', {
+        count: applications?.length,
+        error: appError,
+        sample: applications?.[0]
+    })
+
+    if (appError) {
+        console.error('[searchClients] Error fetching applications:', appError)
+        return { data: [], error: appError }
     }
 
-    const { data, error } = await supabase
-        .from('client_organizations')
-        .select('*')
-        .or(`english_name.ilike.%${query}%,vietnamese_name.ilike.%${query}%,tax_code.ilike.%${query}%`)
-        .limit(10)
+    if (!applications || applications.length === 0) {
+        console.log('[searchClients] No submitted applications found')
+        return { data: [], error: null }
+    }
 
-    return { data, error }
+    // Extract unique clients from applications (using content.companyInfo)
+    const clientsMap = new Map()
+
+    for (const app of applications) {
+        try {
+            const companyInfo = app.content?.companyInfo
+            if (!companyInfo) continue
+
+            const nameVn = companyInfo.nameVn || ''
+            const nameEn = companyInfo.nameEn || ''
+            const displayName = nameVn || nameEn || app.user_id
+
+            // If query provided, filter by name
+            if (query && !displayName.toLowerCase().includes(query.toLowerCase())) {
+                continue
+            }
+
+            // Use user_id as unique key
+            const clientKey = app.user_id
+
+            if (!clientsMap.has(clientKey)) {
+                clientsMap.set(clientKey, {
+                    id: app.user_id, // Use user_id as ID for compatibility
+                    english_name: nameEn || nameVn || app.user_id,
+                    vietnamese_name: nameVn,
+                    tax_code: companyInfo.taxCode || 'N/A',
+                    user_id: app.user_id,
+                    // Store companyInfo for later use
+                    companyInfo: companyInfo
+                })
+            }
+        } catch (e) {
+            console.error('[searchClients] Error processing application:', e)
+        }
+    }
+
+    const clients = Array.from(clientsMap.values())
+
+    console.log('[searchClients] Final clients:', { count: clients.length, sample: clients[0] })
+
+    return { data: clients, error: null }
 }
 
 export async function getClientApplications(clientId: string) {
     const supabase = await createClient()
 
+    console.log('[getClientApplications] Fetching apps for client:', clientId)
+
+    // clientId is actually user_id from the client map
     const { data, error } = await supabase
         .from('audit_applications')
         .select('*')
-        .eq('client_org_id', clientId)
+        .eq('user_id', clientId)
+        .in('status', ['Submitted', 'submitted'])
         .order('created_at', { ascending: false })
+
+    console.log('[getClientApplications] Result:', { count: data?.length, error })
 
     return { data, error }
 }

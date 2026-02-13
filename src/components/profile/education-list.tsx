@@ -71,7 +71,7 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
                 .upload(fileName, file)
 
             if (uploadError) {
-                toast.error('Upload failed: ' + uploadError.message)
+                toast.error('Tải lên thất bại: ' + uploadError.message)
                 setIsUploading(false)
                 return
             }
@@ -114,16 +114,16 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
         setIsUploading(false)
 
         if (error) {
-            toast.error('Failed to save: ' + error.message)
+            toast.error('Lưu thất bại: ' + error.message)
             return
         }
 
         if (isEditing) {
             setEducations(educations.map(e => e.id === isEditing ? data : e))
-            toast.success('Education updated')
+            toast.success('Đã cập nhật học vấn')
         } else {
             setEducations([data, ...educations])
-            toast.success('Education added')
+            toast.success('Đã thêm học vấn')
         }
 
         resetForm()
@@ -131,24 +131,24 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this record?")) return
+        if (!confirm("Bạn có chắc chắn muốn xóa mục này?")) return
 
         const supabase = createClient()
         const { error } = await supabase.from('user_educations').delete().eq('id', id)
 
         if (error) {
-            toast.error('Failed to delete')
+            toast.error('Xóa thất bại')
             return
         }
         setEducations(educations.filter(e => e.id !== id))
-        toast.success('Deleted')
+        toast.success('Đã xóa')
         router.refresh()
     }
 
     const handleViewProof = async (path: string) => {
         const { signedUrl, error } = await getSignedDocumentUrl(path)
         if (error) {
-            toast.error("Could not generate link")
+            toast.error("Không thể tạo liên kết")
             return
         }
         if (signedUrl) {
@@ -159,11 +159,11 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
     return (
         <div className="space-y-4">
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium">Education History</h3>
+                <h3 className="text-lg font-medium">Lịch Sử Học Vấn</h3>
                 {!isAdding && (
                     <Button size="sm" onClick={() => { setIsAdding(true); setFormData({}) }}>
                         <Plus className="h-4 w-4 mr-2" />
-                        Add Education
+                        Thêm Học Vấn
                     </Button>
                 )}
             </div>
@@ -172,7 +172,7 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
                 <Card className="border-primary/20 bg-primary/5">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-base font-semibold">
-                            {isEditing ? 'Edit Education' : 'New Education'}
+                            {isEditing ? 'Chỉnh Sửa Học Vấn' : 'Học Vấn Mới'}
                         </CardTitle>
                         <Button variant="ghost" size="sm" onClick={resetForm}><X className="h-4 w-4" /></Button>
                     </CardHeader>
@@ -180,46 +180,46 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
                         <form onSubmit={handleSave} className="space-y-4 mt-2">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label>Institution</Label>
-                                    <Input name="institution" defaultValue={formData.institution} required placeholder="University name" />
+                                    <Label>Trường/Cơ Sở Đào Tạo</Label>
+                                    <Input name="institution" defaultValue={formData.institution} required placeholder="Tên trường" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Degree</Label>
-                                    <Input name="degree" defaultValue={formData.degree} placeholder="e.g. Bachelor's" />
+                                    <Label>Bằng Cấp</Label>
+                                    <Input name="degree" defaultValue={formData.degree} placeholder="VD: Cử nhân" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label>Field of Study</Label>
-                                    <Input name="field_of_study" defaultValue={formData.field_of_study} placeholder="e.g. Computer Science" />
+                                    <Label>Chuyên Ngành</Label>
+                                    <Input name="field_of_study" defaultValue={formData.field_of_study} placeholder="VD: Khoa học máy tính" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div className="space-y-2">
-                                        <Label>Start Date</Label>
+                                        <Label>Ngày Bắt Đầu</Label>
                                         <Input type="date" name="start_date" defaultValue={formData.start_date} />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label>End Date</Label>
+                                        <Label>Ngày Kết Thúc</Label>
                                         <Input type="date" name="end_date" defaultValue={formData.end_date} />
                                     </div>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label>Description</Label>
-                                <Textarea name="description" defaultValue={formData.description} placeholder="Activities and societies..." />
+                                <Label>Mô Tả</Label>
+                                <Textarea name="description" defaultValue={formData.description} placeholder="Hoạt động và thành tích..." />
                             </div>
                             <div className="space-y-2">
-                                <Label>Proof Document (PDF/Image)</Label>
+                                <Label>Tài Liệu Minh Chứng (PDF/Ảnh)</Label>
                                 <div className="flex gap-2 items-center">
                                     <Input type="file" ref={fileInputRef} accept=".pdf,image/*" className="bg-background" />
                                 </div>
                                 {formData.document_url && (
-                                    <p className="text-xs text-muted-foreground">Current file attached. Upload new to replace.</p>
+                                    <p className="text-xs text-muted-foreground">Đang có tệp đính kèm. Tải lên mới để thay thế.</p>
                                 )}
                             </div>
                             <div className="flex justify-end gap-2">
-                                <Button type="button" variant="ghost" onClick={resetForm}>Cancel</Button>
+                                <Button type="button" variant="ghost" onClick={resetForm}>Hủy</Button>
                                 <Button type="submit" disabled={isUploading}>
                                     {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                    Save Record
+                                    Lưu Hồ Sơ
                                 </Button>
                             </div>
                         </form>
@@ -240,7 +240,7 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
                                         <h4 className="font-semibold">{edu.institution}</h4>
                                         <p className="text-sm text-muted-foreground">{edu.degree} - {edu.field_of_study}</p>
                                         <p className="text-xs text-muted-foreground mt-1">
-                                            {edu.start_date || 'N/A'} - {edu.end_date || 'Present'}
+                                            {edu.start_date || 'N/A'} - {edu.end_date || 'Hiện Tại'}
                                         </p>
                                         {edu.description && <p className="text-sm mt-2 text-primary/80">{edu.description}</p>}
 
@@ -252,7 +252,7 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
                                                     className="h-auto p-0 text-blue-600 font-semibold"
                                                     onClick={() => handleViewProof(edu.document_url!)}
                                                 >
-                                                    <FileText className="h-3 w-3 mr-1" /> View Proof
+                                                    <FileText className="h-3 w-3 mr-1" /> Xem Minh Chứng
                                                 </Button>
                                             </div>
                                         )}
@@ -272,7 +272,7 @@ export function EducationList({ initialData }: { initialData: Education[] }) {
                 ))}
                 {!educations.length && !isAdding && (
                     <div className="text-center py-8 text-muted-foreground border rounded-lg border-dashed">
-                        No education records found.
+                        Không tìm thấy hồ sơ học vấn.
                     </div>
                 )}
             </div>
